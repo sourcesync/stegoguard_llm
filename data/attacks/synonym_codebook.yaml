@@ -1,0 +1,30 @@
+version: "synonym_slots_v1"
+description: >-
+  Eight binary lexical slots for the black-box prompt-driven channel. Each
+  generated response must contain exactly one selected alternative per slot and
+  none of the unselected alternatives.
+slots:
+  - slot_id: "slot_01"
+    zero: "important"
+    one: "crucial"
+  - slot_id: "slot_02"
+    zero: "begin"
+    one: "start"
+  - slot_id: "slot_03"
+    zero: "use"
+    one: "apply"
+  - slot_id: "slot_04"
+    zero: "help"
+    one: "assist"
+  - slot_id: "slot_05"
+    zero: "check"
+    one: "verify"
+  - slot_id: "slot_06"
+    zero: "improve"
+    one: "enhance"
+  - slot_id: "slot_07"
+    zero: "result"
+    one: "outcome"
+  - slot_id: "slot_08"
+    zero: "choose"
+    one: "select"

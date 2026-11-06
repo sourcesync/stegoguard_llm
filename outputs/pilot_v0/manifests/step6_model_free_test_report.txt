@@ -1,0 +1,41 @@
+COMMAND: PYTHONPATH=src python -m compileall src scripts tests
+RESULT: PASS
+
+COMMAND: PYTHONPATH=src python -m unittest discover -s tests -p test_*.py -v
+test_context_changes_payload (test_payloads.PayloadTests.test_context_changes_payload) ... ok
+test_hash_and_integer_are_stable (test_payloads.PayloadTests.test_hash_and_integer_are_stable) ... ok
+test_invalid_bitstring (test_payloads.PayloadTests.test_invalid_bitstring) ... ok
+test_payload_is_deterministic (test_payloads.PayloadTests.test_payload_is_deterministic) ... ok
+test_fake_model_round_trip (test_rank_channel.RankChannelIntegrationTests.test_fake_model_round_trip) ... ok
+test_invalid_values (test_rank_partition.RankPartitionTests.test_invalid_values) ... ok
+test_offset_is_deterministic_and_context_sensitive (test_rank_partition.RankPartitionTests.test_offset_is_deterministic_and_context_sensitive) ... ok
+test_rank_partition (test_rank_partition.RankPartitionTests.test_rank_partition) ... ok
+test_token_record_relations (test_records.RecordTests.test_token_record_relations) ... ok
+test_case_and_punctuation (test_synonym_decoder.SynonymDecoderTests.test_case_and_punctuation) ... ok
+test_codebook_validation (test_synonym_decoder.SynonymDecoderTests.test_codebook_validation) ... ok
+test_exact_recovery (test_synonym_decoder.SynonymDecoderTests.test_exact_recovery) ... ok
+test_missing_ambiguous_and_repeated_slots (test_synonym_decoder.SynonymDecoderTests.test_missing_ambiguous_and_repeated_slots) ... ok
+test_payload_selects_expected_words (test_synonym_decoder.SynonymDecoderTests.test_payload_selects_expected_words) ... ok
+test_substrings_do_not_count (test_synonym_decoder.SynonymDecoderTests.test_substrings_do_not_count) ... ok
+test_yaml_loader (test_synonym_decoder.SynonymDecoderTests.test_yaml_loader) ... ok
+test_fake_model_round_trip (test_synonym_encoder.SynonymEncoderIntegrationTests.test_fake_model_round_trip) ... ok
+test_invalid_payloads_are_rejected (test_unicode_channel.UnicodeChannelTests.test_invalid_payloads_are_rejected) ... ok
+test_malformed_frames_are_rejected (test_unicode_channel.UnicodeChannelTests.test_malformed_frames_are_rejected) ... ok
+test_reserved_codepoints_in_cover_are_rejected (test_unicode_channel.UnicodeChannelTests.test_reserved_codepoints_in_cover_are_rejected) ... ok
+test_round_trip_and_visible_text_preservation (test_unicode_channel.UnicodeChannelTests.test_round_trip_and_visible_text_preservation) ... ok
+test_supported_visible_endings (test_unicode_channel.UnicodeChannelTests.test_supported_visible_endings) ... ok
+
+----------------------------------------------------------------------
+Ran 22 tests in 0.008s
+
+OK
+
+COMMAND: structural codebook audit
+Synonym codebook audit passed.
+Slots: 8
+Report: outputs/pilot_v0/manifests/synonym_codebook_audit.json
+
+COMMAND: script interface checks
+RESULT: PASS
+
+NOTE: transformers and source-model weights are not installed in this execution environment, so live Qwen/Mistral smoke generation was not run here.

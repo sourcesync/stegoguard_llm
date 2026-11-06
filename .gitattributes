@@ -1,0 +1,4 @@
+# Many files are covered by SHA-256 freeze manifests and were produced on
+# Windows with CRLF line endings. Disable line-ending normalization so git
+# stores and checks out every file byte-for-byte.
+* -text

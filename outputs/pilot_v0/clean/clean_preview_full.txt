@@ -1,0 +1,147 @@
+StegoGuard-LM Clean Generation Preview
+==================================================
+
+sample_id: clean_conv_001_64_qwen_000
+source_model: Qwen/Qwen2.5-7B-Instruct
+domain: conversational
+topic_id: conv_001
+target_length: 64
+actual_token_length: 64
+prompt:
+Write a natural assistant-style response about "time management for graduate students". Keep it coherent, self-contained, and appropriate for a general audience. Aim for approximately 64 tokens.
+
+text:
+Time management is crucial for graduate students to balance coursework, research, and personal life. Set clear goals, prioritize tasks, and create a schedule. Use tools like calendars and apps to keep track of deadlines and appointments. Break large projects into smaller, manageable tasks. Regularly review your progress and adjust your plan as needed.
+
+--------------------------------------------------
+
+sample_id: clean_conv_001_64_qwen_001
+source_model: Qwen/Qwen2.5-7B-Instruct
+domain: conversational
+topic_id: conv_001
+target_length: 64
+actual_token_length: 70
+prompt:
+Write a natural assistant-style response about "time management for graduate students". Keep it coherent, self-contained, and appropriate for a general audience. Aim for approximately 64 tokens.
+
+text:
+Time management is crucial for graduate students to balance coursework, research, and personal life. Start by setting clear goals and creating a schedule that prioritizes tasks. Use tools like calendars and planners to keep track of deadlines and appointments. Break large projects into manageable steps and set deadlines for each. Remember to allocate time for breaks and relaxation to avoid burnout.
+
+--------------------------------------------------
+
+sample_id: clean_conv_001_64_qwen_002
+source_model: Qwen/Qwen2.5-7B-Instruct
+domain: conversational
+topic_id: conv_001
+target_length: 64
+actual_token_length: 62
+prompt:
+Write a natural assistant-style response about "time management for graduate students". Keep it coherent, self-contained, and appropriate for a general audience. Aim for approximately 64 tokens.
+
+text:
+Time management is crucial for graduate students to balance coursework, research, and personal life. Set clear goals, prioritize tasks, and use tools like calendars and to-do lists. Break large projects into smaller steps and allocate specific times for studying and researching. Regular breaks and maintaining a routine can enhance productivity and reduce stress.
+
+--------------------------------------------------
+
+sample_id: clean_conv_001_64_qwen_003
+source_model: Qwen/Qwen2.5-7B-Instruct
+domain: conversational
+topic_id: conv_001
+target_length: 64
+actual_token_length: 57
+prompt:
+Write a natural assistant-style response about "time management for graduate students". Keep it coherent, self-contained, and appropriate for a general audience. Aim for approximately 64 tokens.
+
+text:
+Managing time effectively as a graduate student can be challenging but rewarding. Start by setting clear goals and priorities. Use tools like calendars and planners to schedule tasks and deadlines. Break larger projects into smaller, manageable steps. Don't forget to allocate time for breaks and relaxation to avoid burnout.
+
+--------------------------------------------------
+
+sample_id: clean_conv_002_64_qwen_000
+source_model: Qwen/Qwen2.5-7B-Instruct
+domain: conversational
+topic_id: conv_002
+target_length: 64
+actual_token_length: 68
+prompt:
+Write a natural assistant-style response about "planning a weekly grocery budget". Keep it coherent, self-contained, and appropriate for a general audience. Aim for approximately 64 tokens.
+
+text:
+Planning a weekly grocery budget is a great way to manage your food expenses. Start by listing what you eat regularly and estimate the quantities needed. Set a total budget based on your income and financial goals. Compare prices at different stores and consider buying in bulk for non-perishables. Track your spending throughout the week to stay within your budget.
+
+--------------------------------------------------
+
+sample_id: clean_conv_002_64_qwen_001
+source_model: Qwen/Qwen2.5-7B-Instruct
+domain: conversational
+topic_id: conv_002
+target_length: 64
+actual_token_length: 65
+prompt:
+Write a natural assistant-style response about "planning a weekly grocery budget". Keep it coherent, self-contained, and appropriate for a general audience. Aim for approximately 64 tokens.
+
+text:
+Sure! Planning a weekly grocery budget is a great way to manage your spending. Start by listing all necessary items, then check prices at different stores. Set a total amount you're willing to spend. Use coupons and shop sales to save. Stick to your list to avoid impulse buys. Regularly review and adjust as needed.
+
+--------------------------------------------------
+
+sample_id: clean_conv_002_64_qwen_002
+source_model: Qwen/Qwen2.5-7B-Instruct
+domain: conversational
+topic_id: conv_002
+target_length: 64
+actual_token_length: 65
+prompt:
+Write a natural assistant-style response about "planning a weekly grocery budget". Keep it coherent, self-contained, and appropriate for a general audience. Aim for approximately 64 tokens.
+
+text:
+Sure! Planning a weekly grocery budget helps manage expenses and ensures you have the essentials. Start by listing your weekly meals, then check what ingredients you already have. Set a total budget based on your income and spending habits. Stick to shopping lists to avoid impulse buys. Compare prices and use coupons or store loyalty cards to save.
+
+--------------------------------------------------
+
+sample_id: clean_conv_002_64_qwen_003
+source_model: Qwen/Qwen2.5-7B-Instruct
+domain: conversational
+topic_id: conv_002
+target_length: 64
+actual_token_length: 65
+prompt:
+Write a natural assistant-style response about "planning a weekly grocery budget". Keep it coherent, self-contained, and appropriate for a general audience. Aim for approximately 64 tokens.
+
+text:
+Planning a weekly grocery budget is a great way to manage your food expenses efficiently. Start by listing all the essentials you need each week. Then, check your pantry and fridge to avoid buying duplicates. Set a total budget based on your income and financial goals. Compare prices at different stores and consider shopping during sales or using coupons.
+
+--------------------------------------------------
+
+sample_id: clean_conv_003_64_qwen_000
+source_model: Qwen/Qwen2.5-7B-Instruct
+domain: conversational
+topic_id: conv_003
+target_length: 64
+actual_token_length: 59
+prompt:
+Write a natural assistant-style response about "explaining a missed meeting politely". Keep it coherent, self-contained, and appropriate for a general audience. Aim for approximately 64 tokens.
+
+text:
+Certainly! When explaining a missed meeting politely, start with an apology for the inconvenience caused. Then, briefly explain the reason for your absence, ensuring it sounds genuine and not overly long. Here’s an example:
+
+"Dear [Recipient's Name],
+
+I sincerely apologize for missing our scheduled meeting today.
+
+--------------------------------------------------
+
+sample_id: clean_conv_003_64_qwen_001
+source_model: Qwen/Qwen2.5-7B-Instruct
+domain: conversational
+topic_id: conv_003
+target_length: 64
+actual_token_length: 69
+prompt:
+Write a natural assistant-style response about "explaining a missed meeting politely". Keep it coherent, self-contained, and appropriate for a general audience. Aim for approximately 64 tokens.
+
+text:
+When explaining a missed meeting, it's important to be honest yet considerate. For example, you might say, "I apologize for missing our meeting today. Unfortunately, I got caught up with an urgent task that required my immediate attention. I understand the importance of this meeting and will make sure to catch up with you as soon as possible."
+
+--------------------------------------------------
+

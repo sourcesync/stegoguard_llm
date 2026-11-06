@@ -1,0 +1,16 @@
+stage,condition,metric,value,note
+step9_oracle_mitigation,deterministic_rewrite::rank_encoding,exact_payload_recovery_rate,0.0,Frozen Step 9 full feasible-inventory oracle result
+step9_oracle_mitigation,deterministic_rewrite::synonym_slot_codebook,exact_payload_recovery_rate,0.009259259259259259,Frozen Step 9 full feasible-inventory oracle result
+step9_oracle_mitigation,deterministic_rewrite::unicode_hidden_channel,exact_payload_recovery_rate,0.0,Frozen Step 9 full feasible-inventory oracle result
+step9_oracle_mitigation,randomized_rewrite::rank_encoding,exact_payload_recovery_rate,0.0,Frozen Step 9 full feasible-inventory oracle result
+step9_oracle_mitigation,randomized_rewrite::synonym_slot_codebook,exact_payload_recovery_rate,0.030864197530864196,Frozen Step 9 full feasible-inventory oracle result
+step9_oracle_mitigation,randomized_rewrite::unicode_hidden_channel,exact_payload_recovery_rate,0.0,Frozen Step 9 full feasible-inventory oracle result
+step9_oracle_mitigation,unicode_sanitization::rank_encoding,exact_payload_recovery_rate,1.0,Frozen Step 9 full feasible-inventory oracle result
+step9_oracle_mitigation,unicode_sanitization::synonym_slot_codebook,exact_payload_recovery_rate,1.0,Frozen Step 9 full feasible-inventory oracle result
+step9_oracle_mitigation,unicode_sanitization::unicode_hidden_channel,exact_payload_recovery_rate,0.0,Frozen Step 9 full feasible-inventory oracle result
+step11_r3_adaptive,frozen_no_feedback::deterministic_rewrite,exact_payload_survival_rate,0.125,Frozen Step 11 R3 system-level result
+step11_r3_adaptive,frozen_no_feedback::randomized_rewrite,exact_payload_survival_rate,0.125,Frozen Step 11 R3 system-level result
+step11_r3_adaptive,fixed_channel_feedback::deterministic_rewrite,exact_payload_survival_rate,0.14583333333333334,Frozen Step 11 R3 system-level result
+step11_r3_adaptive,fixed_channel_feedback::randomized_rewrite,exact_payload_survival_rate,0.14583333333333334,Frozen Step 11 R3 system-level result
+step11_r3_adaptive,channel_migration_feedback::deterministic_rewrite,exact_payload_survival_rate,0.25,Frozen Step 11 R3 system-level result
+step11_r3_adaptive,channel_migration_feedback::randomized_rewrite,exact_payload_survival_rate,0.2708333333333333,Frozen Step 11 R3 system-level result

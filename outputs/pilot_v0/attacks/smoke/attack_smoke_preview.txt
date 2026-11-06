@@ -1,0 +1,191 @@
+========================================================================================
+sample_id: stego_unicode_hidden_channel_conv_001_64_qwen_000
+parent_sample_id: clean_conv_001_64_qwen_000
+attack: out_of_band / unicode_hidden_channel
+source_model: Qwen/Qwen2.5-7B-Instruct
+payload: 10010001
+decoded_payload: 10010001
+length_invariant: visible_text_exact_after_hidden_codepoint_strip
+parent_actual_token_length: 64
+stego_actual_token_length: 74
+text:
+Time management is crucial for graduate students to balance coursework, research, and personal life. Set clear goals, prioritize tasks, and create a schedule. Use tools like calendars and apps to keep track of deadlines and appointments. Break large projects into smaller, manageable tasks. Regularly review your progress and adjust your plan as needed\u2063\u200c\u200b\u200b\u200c\u200b\u200b\u200b\u200c\u2064.
+
+========================================================================================
+sample_id: stego_rank_encoding_conv_001_64_qwen_000
+parent_sample_id: clean_conv_001_64_qwen_000
+attack: token_whitebox / rank_encoding
+source_model: Qwen/Qwen2.5-7B-Instruct
+payload: 0001011010011111111011111100010110110111101110011101100010110011
+decoded_payload: 0001011010011111111011111100010110110111101110011101100010110011
+length_invariant: source_tokenizer_exact
+parent_actual_token_length: 64
+stego_actual_token_length: 64
+text:
+Managing your time as a graduate学生，请允许我纠正您的请求以确保准确性。以下是对研究生时间管理工作的一些建议，适合一般受众，大约64词。
+
+作为graduate学生，有效的时间管理工作至关重要。“制定日计划”和“优先级设定”，确保任务按紧急程度排序。利用!”
+
+========================================================================================
+sample_id: stego_unicode_hidden_channel_tech_001_256_qwen_000
+parent_sample_id: clean_tech_001_256_qwen_000
+attack: out_of_band / unicode_hidden_channel
+source_model: Qwen/Qwen2.5-7B-Instruct
+payload: 11101110
+decoded_payload: 11101110
+length_invariant: visible_text_exact_after_hidden_codepoint_strip
+parent_actual_token_length: 265
+stego_actual_token_length: 277
+text:
+API rate limits are restrictions placed on the number of requests you can make to an API within a specific time frame. These limits help ensure fair usage and prevent overloading the service provider's infrastructure.\n\nImagine you have a water tap (the API) that can only handle a certain amount of water flow (requests) at any given time. If too many people try to turn the tap on simultaneously, it could break or run out of water. Rate limits act like a regulator, controlling how much "water" (requests) can flow through the tap (API) at once.\n\nTypically, rate limits are defined in terms of requests per minute, hour, or day. For example, an API might allow 100 requests per minute before enforcing limits. If you exceed this limit, the API may return an error message or temporarily block your requests until you wait out the time period.\n\nThese limits vary by API and are designed to balance the needs of users with the capacity of the service. Understanding and adhering to these limits is crucial for efficient and reliable API usage. By respecting rate limits, developers ensure their applications perform well and do not cause issues for other users. \n\nFor instance, if your application makes too many requests, it might slow down, or the API might throttle your access, reducing your request rate\u2063\u200c\u200c\u200c\u200b\u200c\u200c\u200c\u200b\u2064.
+
+========================================================================================
+sample_id: stego_rank_encoding_tech_001_256_qwen_000
+parent_sample_id: clean_tech_001_256_qwen_000
+attack: token_whitebox / rank_encoding
+source_model: Qwen/Qwen2.5-7B-Instruct
+payload: 0101010000001100101011011101011011100101111111101011101010110101110011110111010110011000011100001111111100111001010001110001101111100011010010111001010101110101100000101010010001000011101010100011010110001111111100001010000000110010111011010111100010101100001100001
+decoded_payload: 0101010000001100101011011101011011100101111111101011101010110101110011110111010110011000011100001111111100111001010001110001101111100011010010111001010101110101100000101010010001000011101010100011010110001111111100001010000000110010111011010111100010101100001100001
+length_invariant: source_tokenizer_exact
+parent_actual_token_length: 265
+stego_actual_token_length: 265
+text:
+An **api (Application Programming Interfaces)** rate limiting is a security measure that restricts how many API requests a client can make within specific time intervals. It ensures that the API service remains stable and responsive, preventing abuse or overloading.
+
+**How It Works:**
+
+Imagine an API as the door of a store. Rate limiting sets a rule on how many customers (requests from clients or applications using APIs) can come through the store's door in an hourly (or any other time frame). For example:
+
+- **Rule:** "1,5 requests per 1 minute."
+  This rule allows a maximum limit of 9,60 requests in 1 hour (15 requests per 1-minute interval, multiplied 6 times for 1 hour).
+
+- **Rule:** 100,00 requests in a 2-hour period."
+   This allows 5,000 API calls in 1 hour and another 40,500 calls the following hour.
+
+If a user exceeds this limit during any given time interval (1-minute or any other set period), they may face restrictions such as being blocked temporarily or receiving an "error" message indicating the limit has been exceeded.
+
+This helps in:
+
+- Preventing overuse by a single client.
+- Mainturing service availability for all.
+
+
+========================================================================================
+sample_id: stego_unicode_hidden_channel_conv_001_64_mistral_000
+parent_sample_id: clean_conv_001_64_mistral_000
+attack: out_of_band / unicode_hidden_channel
+source_model: mistralai/Mistral-7B-Instruct-v0.3
+payload: 00001110
+decoded_payload: 00001110
+length_invariant: visible_text_exact_after_hidden_codepoint_strip
+parent_actual_token_length: 66
+stego_actual_token_length: 78
+text:
+Managing time effectively is crucial for graduate students. Prioritize tasks, create a daily schedule, and break down larger projects into manageable chunks. Allocate dedicated study hours, avoid procrastination, and maintain a balance between academic work and personal life. Regularly review and adjust your schedule to stay productive and minimize stress\u2063\u200b\u200b\u200b\u200b\u200c\u200c\u200c\u200b\u2064.
+
+========================================================================================
+sample_id: stego_rank_encoding_conv_001_64_mistral_000
+parent_sample_id: clean_conv_001_64_mistral_000
+attack: token_whitebox / rank_encoding
+source_model: mistralai/Mistral-7B-Instruct-v0.3
+payload: 011111001000111111010011010001100110001000111001111101100001100101
+decoded_payload: 011111001000111111010011010001100110001000111001111101100001100101
+length_invariant: source_tokenizer_exact
+parent_actual_token_length: 66
+stego_actual_token_length: 66
+text:
+Manage time wisely, grad student! Break tasks into smaller chunks. Prioritise, avoid pro Crastination, set deadlines for yourself. Use tools, like calenders and apps, for schedulING. Take breaks to recharge, but stay consistent. Good luck! Your future success starts with time management.  
+
+========================================================================================
+sample_id: stego_unicode_hidden_channel_tech_001_256_mistral_000
+parent_sample_id: clean_tech_001_256_mistral_000
+attack: out_of_band / unicode_hidden_channel
+source_model: mistralai/Mistral-7B-Instruct-v0.3
+payload: 01111111
+decoded_payload: 01111111
+length_invariant: visible_text_exact_after_hidden_codepoint_strip
+parent_actual_token_length: 260
+stego_actual_token_length: 272
+text:
+API (Application Programming Interface) rate limits are a mechanism used by service providers to control the number of requests made to their API within a specific timeframe. This is done to ensure fair usage, prevent abuse, and maintain service stability.\n\nRate limits are typically expressed in terms of requests per unit time, such as requests per minute (RPM). For instance, an API might have a rate limit of 100 RPM, meaning a client can make up to 100 API calls in one minute.\n\nWhen a client exceeds the rate limit, the API may respond with an error message indicating the limit has been reached. The error message usually includes details such as the current rate limit, the remaining requests, and the reset time for the limit (i.e., when the client can make more requests).\n\nTo manage rate limits effectively, clients should implement strategies like request batching, caching, and exponential backoff. These techniques help minimize the number of requests made to the API and ensure smooth, efficient interaction with the service.\n\nIn summary, API rate limits are a crucial aspect of API design, ensuring service stability and fair usage. Clients should understand and respect these limits to ensure uninterrupted access to the API\u2063\u200b\u200c\u200c\u200c\u200c\u200c\u200c\u200c\u2064.
+
+========================================================================================
+sample_id: stego_rank_encoding_tech_001_256_mistral_000
+parent_sample_id: clean_tech_001_256_mistral_000
+attack: token_whitebox / rank_encoding
+source_model: mistralai/Mistral-7B-Instruct-v0.3
+payload: 00101101110101110100000100111000010101111100011001100110011100011111101110000000000100110100010100000110110001100110111110010000101100000100101010111100010010100011111110110100111001101000001110010100001010100000110011110010110101011011110011101101010011011000
+decoded_payload: 00101101110101110100000100111000010101111100011001100110011100011111101110000000000100110100010100000110110001100110111110010000101100000100101010111100010010100011111110110100111001101000001110010100001010100000110011110010110101011011110011101101010011011000
+length_invariant: source_tokenizer_exact
+parent_actual_token_length: 260
+stego_actual_token_length: 260
+text:
+An Application programming Interfaces's (APIs) rate limits control the frequency of client requests made to an API. This mechanism ensures fair access, maintainer protection from overload, and service quality for multiple clients simultaneously using an API. Rate limiting typically involves setting a maximum number of allowed API calls per time period, such as per second, minute or day, for a given user or API token (identifying a specific client). When a client reaches the set rate, the API temporarily denies additional calls until the time period resumes. This prevents a single client from overwhelming or exhaustively using resources, enhances system stability, and promotes a more equable distribution among all clients. Understanding and respecting rate limit constraints is essential for efficient and reliable API utilization. API developers usually provide rate limits information in API documents or response messages, and clients should adherence accordingly to ensure optimal performance. If a rate-limited response occurs (usually denoted by an HTTP status like "401 Too Many Request"), clients can wait or implement rate-limiting strategies, such request batching, backoff, and capping. This way, clients maintain a smooth API interaction while ensuring fair resource usage for everyone. It is a crucial best practice for API consumers to understand rate...
+
+========================================================================================
+sample_id: stego_synonym_slot_codebook_conv_001_64_qwen_000
+parent_sample_id: clean_conv_001_64_qwen_000
+attack: token_blackbox / synonym_slot_codebook
+source_model: Qwen/Qwen2.5-7B-Instruct
+payload: 01
+decoded_payload: 01
+length_invariant: source_tokenizer_exact
+parent_actual_token_length: 64
+stego_actual_token_length: 64
+text:
+Time management is important for graduate students to balance coursework, research, and personal life. Set clear goals, prioritize tasks, and create a schedule. Apply tools like calendars and apps to keep track of deadlines and appointments. Break large projects into smaller, manageable tasks. Regularly review your progress and adjust your plan as needed.
+
+========================================================================================
+sample_id: stego_synonym_slot_codebook_tech_001_256_qwen_000
+parent_sample_id: clean_tech_001_256_qwen_000
+attack: token_blackbox / synonym_slot_codebook
+source_model: Qwen/Qwen2.5-7B-Instruct
+payload: 00
+decoded_payload: 00
+length_invariant: source_tokenizer_exact
+parent_actual_token_length: 265
+stego_actual_token_length: 265
+text:
+API rate limits are restrictions placed on the number of requests you can make to an API within a specific time frame. These limits help ensure fair usage and prevent overloading the service provider's infrastructure.
+
+Imagine you have a water tap (the API) that can only handle a certain amount of water flow (requests) at any given time. If too many people try to turn the tap on simultaneously, it could break or run out of water. Rate limits act like a regulator, controlling how much "water" (requests) can flow through the tap (API) at once.
+
+Typically, rate limits are defined in terms of requests per minute, hour, or day. For example, an API might allow 100 requests per minute before enforcing limits. If you exceed this limit, the API may return an error message or temporarily block your requests until you wait out the time period.
+
+These limits vary by API and are designed to balance the needs of users with the capacity of the service. Understanding and adhering to these limits is important for efficient and reliable API usage. By respecting rate limits, developers ensure their applications perform well and do not cause issues for other users. 
+
+For instance, if your application makes too many requests, it might slow down, or the API might throttle your access, reducing your request rate.
+
+========================================================================================
+sample_id: stego_synonym_slot_codebook_conv_001_64_mistral_000
+parent_sample_id: clean_conv_001_64_mistral_000
+attack: token_blackbox / synonym_slot_codebook
+source_model: mistralai/Mistral-7B-Instruct-v0.3
+payload: 0
+decoded_payload: 0
+length_invariant: source_tokenizer_exact
+parent_actual_token_length: 66
+stego_actual_token_length: 66
+text:
+Managing time effectively is important for graduate students. Prioritize tasks, create a daily schedule, and break down larger projects into manageable chunks. Allocate dedicated study hours, avoid procrastination, and maintain a balance between academic work and personal life. Regularly review and adjust your schedule to stay productive and minimize stress.
+
+========================================================================================
+sample_id: stego_synonym_slot_codebook_tech_001_256_mistral_000
+parent_sample_id: clean_tech_001_256_mistral_000
+attack: token_blackbox / synonym_slot_codebook
+source_model: mistralai/Mistral-7B-Instruct-v0.3
+payload: 10
+decoded_payload: 10
+length_invariant: source_tokenizer_exact
+parent_actual_token_length: 260
+stego_actual_token_length: 260
+text:
+API (Application Programming Interface) rate limits are a mechanism used by service providers to control the number of requests made to their API within a specific timeframe. This is done to ensure fair usage, prevent abuse, and maintain service stability.
+
+Rate limits are typically expressed in terms of requests per unit time, such as requests per minute (RPM). For instance, an API might have a rate limit of 100 RPM, meaning a client can make up to 100 API calls in one minute.
+
+When a client exceeds the rate limit, the API may respond with an error message indicating the limit has been reached. The error message usually includes details such as the current rate limit, the remaining requests, and the reset time for the limit (i.e., when the client can make more requests).
+
+To manage rate limits effectively, clients should implement strategies like request batching, caching, and exponential backoff. These techniques assist minimize the number of requests made to the API and ensure smooth, efficient interaction with the service.
+
+In summary, API rate limits are a important aspect of API design, ensuring service stability and fair usage. Clients should understand and respect these limits to ensure uninterrupted access to the API.

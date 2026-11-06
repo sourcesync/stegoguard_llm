@@ -1,0 +1,17 @@
+defender_policy,initial_attack_name,round_id,n,successful_covert_bits_total,exact_payload_survival_rate,synonym_share
+deterministic_rewrite,rank_encoding,0,24,0,0.0,0.0
+deterministic_rewrite,rank_encoding,1,24,9,0.25,1.0
+deterministic_rewrite,rank_encoding,2,24,9,0.25,0.25
+deterministic_rewrite,rank_encoding,3,24,9,0.25,1.0
+deterministic_rewrite,synonym_slot_codebook,0,24,10,0.25,1.0
+deterministic_rewrite,synonym_slot_codebook,1,24,10,0.25,0.25
+deterministic_rewrite,synonym_slot_codebook,2,24,10,0.25,1.0
+deterministic_rewrite,synonym_slot_codebook,3,24,10,0.25,0.25
+randomized_rewrite,rank_encoding,0,24,0,0.0,0.0
+randomized_rewrite,rank_encoding,1,24,10,0.2916666666666667,1.0
+randomized_rewrite,rank_encoding,2,24,9,0.25,0.2916666666666667
+randomized_rewrite,rank_encoding,3,24,9,0.25,0.9583333333333334
+randomized_rewrite,synonym_slot_codebook,0,24,10,0.25,1.0
+randomized_rewrite,synonym_slot_codebook,1,24,10,0.25,0.25
+randomized_rewrite,synonym_slot_codebook,2,24,11,0.2916666666666667,1.0
+randomized_rewrite,synonym_slot_codebook,3,24,11,0.2916666666666667,0.2916666666666667

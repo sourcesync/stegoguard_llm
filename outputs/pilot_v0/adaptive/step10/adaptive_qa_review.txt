@@ -1,0 +1,13 @@
+StegoGuard-LM Step 10 Adaptive QA Review
+========================================
+
+Protocol: step10_adaptive_v1
+Trajectories: 288
+Stego round rows: 1152
+Clean control round rows: 384
+
+Interpretation guardrails:
+- Do not claim adaptation unless feedback-enabled trajectories differ from frozen controls.
+- Do not claim channel migration unless observed transition counts support it.
+- Do not claim resilience from low one-shot survival alone; inspect the four-round trajectories and clean burden.
+- Exact payload failure is not zero information leakage; retain effective bit accuracy and residual capacity.

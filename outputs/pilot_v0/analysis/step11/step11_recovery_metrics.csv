@@ -1,0 +1,7 @@
+attacker_condition,defender_policy,r0_bits,r1_bits,r2_bits,r3_bits,r3_minus_r0_bits,r3_minus_r1_bits,cumulative_bits,r0_exact_survival_rate,r3_exact_survival_rate,r3_minus_r0_exact_rate
+frozen_no_feedback,deterministic_rewrite,10,10,10,10,0,0,40,0.125,0.125,0.0
+frozen_no_feedback,randomized_rewrite,10,11,10,10,0,-1,41,0.125,0.125,0.0
+fixed_channel_feedback,deterministic_rewrite,10,10,12,12,2,2,44,0.125,0.14583333333333334,0.020833333333333343
+fixed_channel_feedback,randomized_rewrite,10,10,15,12,2,2,47,0.125,0.14583333333333334,0.020833333333333343
+channel_migration_feedback,deterministic_rewrite,10,19,19,19,9,0,67,0.125,0.25,0.125
+channel_migration_feedback,randomized_rewrite,10,20,20,20,10,0,70,0.125,0.2708333333333333,0.14583333333333331

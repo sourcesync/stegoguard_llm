@@ -1,0 +1,24 @@
+StegoGuard-LM Step 12 QA Review
+=================================
+
+Protocol: step12_robustness_v1
+Parents: 48
+Trajectories: 288
+Randomization test rows: 54
+R3 endpoint contrasts: 9
+Leave-one-parent rows: 432
+Leave-one-cell rows: 72
+Alternative leakage rows: 18
+Adaptive-window rows: 9
+History-conditioned rows: 18
+Heterogeneity rows: 54
+Clean-cell rows: 64
+Frozen static-ablation reference rows: 8
+
+Interpretation guardrails:
+- Step 12 is sensitivity/robustness analysis, not a new adaptive experiment.
+- Multiple-testing correction is a robustness aid, not a replacement for effect sizes and CIs.
+- Leave-one-out checks diagnose influence; they do not create independent replications.
+- Descriptive strata are not high-powered confirmatory subgroup tests.
+- Exact message failure is not zero leakage.
+- Four adaptive rounds do not establish equilibrium, emergence, or long-run convergence.

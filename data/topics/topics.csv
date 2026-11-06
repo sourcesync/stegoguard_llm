@@ -1,0 +1,13 @@
+topic_id,domain,topic_seed,template_version,is_conflict
+conv_001,conversational,time management for graduate students,v1,false
+conv_002,conversational,planning a weekly grocery budget,v1,false
+conv_003,conversational,explaining a missed meeting politely,v1,false
+conv_004,conversational,choosing between two used cars,v1,false
+conv_005,conversational,preparing for a first research meeting,v1,false
+conv_conf_001,conversational,responding to a student request,v1,true
+tech_001,technical,explaining API rate limits,v1,false
+tech_002,technical,debugging a Python data pipeline,v1,false
+tech_003,technical,comparing model evaluation metrics,v1,false
+tech_004,technical,describing database indexing,v1,false
+tech_005,technical,explaining tokenization in language models,v1,false
+tech_conf_001,technical,writing documentation for a software tool,v1,true

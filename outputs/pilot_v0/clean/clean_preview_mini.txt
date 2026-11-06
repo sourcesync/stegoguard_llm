@@ -1,0 +1,73 @@
+StegoGuard-LM Clean Generation Preview
+==================================================
+
+sample_id: clean_conv_001_64_qwen_000
+source_model: Qwen/Qwen2.5-7B-Instruct
+domain: conversational
+topic_id: conv_001
+target_length: 64
+actual_token_length: 64
+prompt:
+Write a natural assistant-style response about "time management for graduate students". Keep it coherent, self-contained, and appropriate for a general audience. Aim for approximately 64 tokens.
+
+text:
+Time management is crucial for graduate students to balance coursework, research, and personal life. Set clear goals, prioritize tasks, and create a schedule. Use tools like calendars and apps to keep track of deadlines and appointments. Break large projects into smaller, manageable tasks. Regularly review your progress and adjust your plan as needed.
+
+--------------------------------------------------
+
+sample_id: clean_conv_002_64_qwen_000
+source_model: Qwen/Qwen2.5-7B-Instruct
+domain: conversational
+topic_id: conv_002
+target_length: 64
+actual_token_length: 64
+prompt:
+Write a natural assistant-style response about "planning a weekly grocery budget". Keep it coherent, self-contained, and appropriate for a general audience. Aim for approximately 64 tokens.
+
+text:
+Planning a weekly grocery budget is a great way to manage your spending while ensuring you have healthy meals. Start by listing your meals for the week, then note down the ingredients needed. Check what you already have at home to avoid buying duplicates. Look for sales and use coupons. Stick to your list to prevent impulse buys.
+
+--------------------------------------------------
+
+sample_id: clean_conv_003_64_qwen_000
+source_model: Qwen/Qwen2.5-7B-Instruct
+domain: conversational
+topic_id: conv_003
+target_length: 64
+actual_token_length: 65
+prompt:
+Write a natural assistant-style response about "explaining a missed meeting politely". Keep it coherent, self-contained, and appropriate for a general audience. Aim for approximately 64 tokens.
+
+text:
+Of course! If you need to explain a missed meeting politely, you might say: "I apologize for missing our meeting today. I encountered unexpected traffic and arrived late. I value our discussion and am willing to reschedule at your convenience." This approach shows consideration and offers a solution. Would you like more tips or examples?
+
+--------------------------------------------------
+
+sample_id: clean_conv_004_64_qwen_000
+source_model: Qwen/Qwen2.5-7B-Instruct
+domain: conversational
+topic_id: conv_004
+target_length: 64
+actual_token_length: 60
+prompt:
+Write a natural assistant-style response about "choosing between two used cars". Keep it coherent, self-contained, and appropriate for a general audience. Aim for approximately 64 tokens.
+
+text:
+When choosing between two used cars, consider factors like the make and model, age, mileage, condition, and any recent maintenance or repairs. Test drive both to feel their performance and comfort. Check online reviews and consider getting a professional inspection for peace of mind. Price and financing options are also crucial.
+
+--------------------------------------------------
+
+sample_id: clean_conv_005_64_qwen_000
+source_model: Qwen/Qwen2.5-7B-Instruct
+domain: conversational
+topic_id: conv_005
+target_length: 64
+actual_token_length: 66
+prompt:
+Write a natural assistant-style response about "preparing for a first research meeting". Keep it coherent, self-contained, and appropriate for a general audience. Aim for approximately 64 tokens.
+
+text:
+To prepare for your first research meeting, gather all relevant materials like notes from previous discussions, research papers, and data. Review these to refresh your knowledge and identify key points to discuss. Also, think about your goals for the meeting and any questions you want to ask. Arrive early to set up and ensure a comfortable environment.
+
+--------------------------------------------------
+

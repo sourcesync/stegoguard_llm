@@ -1,0 +1,19 @@
+StegoGuard-LM Step 11 QA Review
+=================================
+
+Protocol: step11_system_analysis_v1
+Parents: 48
+Trajectories: 288
+Stego rows: 1152
+Clean rows: 384
+Pairwise rows: 27
+R3 stratified rows: 48
+Figures: 5
+
+Interpretation guardrails:
+- Use frozen/no-feedback controls before attributing change to feedback.
+- Exact payload failure is not zero information leakage.
+- Four rounds do not establish equilibrium, emergence, tipping points, or long-run convergence.
+- Initial-channel effects are history-conditioned within this protocol only.
+- Randomization is a negative/unsupported hypothesis unless paired evidence shows otherwise.
+- R3 model/domain/length strata are descriptive, not high-powered inferential subgroups.

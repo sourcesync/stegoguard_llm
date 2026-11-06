@@ -1,0 +1,71 @@
+seed: 111042
+
+step11_system_analysis:
+  protocol_version: step11_system_analysis_v1
+  input_protocol_version: step10_adaptive_v1
+  expected_parent_count: 48
+  expected_trajectory_count: 288
+  expected_stego_rows: 1152
+  expected_clean_rows: 384
+  round_ids: [0, 1, 2, 3]
+  attacker_conditions:
+    - frozen_no_feedback
+    - fixed_channel_feedback
+    - channel_migration_feedback
+  defender_policies:
+    - deterministic_rewrite
+    - randomized_rewrite
+  attack_names:
+    - rank_encoding
+    - synonym_slot_codebook
+  bootstrap_replicates: 2000
+  bootstrap_cluster_field: clean_parent_id
+  primary_comparison_rounds: [1, 2, 3]
+  primary_outcomes:
+    - successful_covert_bits
+    - exact_payload_recovery
+  primary_condition_contrasts:
+    - [fixed_channel_feedback, frozen_no_feedback]
+    - [channel_migration_feedback, frozen_no_feedback]
+    - [channel_migration_feedback, fixed_channel_feedback]
+  defender_contrast: [randomized_rewrite, deterministic_rewrite]
+  r3_strata:
+    - source_model
+    - domain
+    - nominal_target_length
+  interpretation_rules:
+    require_frozen_control_for_adaptation_claim: true
+    do_not_call_exact_failure_zero_leakage: true
+    do_not_claim_equilibrium_emergence_or_tipping_point: true
+    do_not_claim_universal_randomization_advantage: true
+    describe_path_dependence_as_history_conditioning_only: true
+    use_resilience_profile_not_single_score: true
+
+paths:
+  step10_config: config_step10.yaml
+  step10_freeze_manifest: outputs/pilot_v0/manifests/step10_adaptive_freeze_manifest.json
+  step10_summary: outputs/pilot_v0/adaptive/step10/adaptive_summary.json
+  step10_round_dir_template: outputs/pilot_v0/adaptive/step10/round_{round_id}
+
+  step11_output_dir: outputs/pilot_v0/analysis/step11
+  step11_system_analysis_json: outputs/pilot_v0/analysis/step11/step11_system_analysis.json
+  step11_round_metrics_csv: outputs/pilot_v0/analysis/step11/step11_round_metrics.csv
+  step11_pairwise_comparisons_csv: outputs/pilot_v0/analysis/step11/step11_pairwise_comparisons.csv
+  step11_trajectory_metrics_csv: outputs/pilot_v0/analysis/step11/step11_trajectory_metrics.csv
+  step11_transition_metrics_csv: outputs/pilot_v0/analysis/step11/step11_transition_metrics.csv
+  step11_attack_family_metrics_csv: outputs/pilot_v0/analysis/step11/step11_attack_family_metrics.csv
+  step11_rank_residual_capacity_csv: outputs/pilot_v0/analysis/step11/step11_rank_residual_capacity.csv
+  step11_recovery_metrics_csv: outputs/pilot_v0/analysis/step11/step11_recovery_metrics.csv
+  step11_resilience_profiles_csv: outputs/pilot_v0/analysis/step11/step11_resilience_profiles.csv
+  step11_history_conditioned_metrics_csv: outputs/pilot_v0/analysis/step11/step11_history_conditioned_metrics.csv
+  step11_stratified_metrics_csv: outputs/pilot_v0/analysis/step11/step11_stratified_metrics.csv
+  step11_clean_metrics_csv: outputs/pilot_v0/analysis/step11/step11_clean_metrics.csv
+  step11_hypothesis_assessment_json: outputs/pilot_v0/analysis/step11/step11_hypothesis_assessment.json
+  step11_system_interpretation_md: outputs/pilot_v0/analysis/step11/step11_system_interpretation.md
+  step11_qa_review_txt: outputs/pilot_v0/analysis/step11/step11_qa_review.txt
+  step11_validation_summary_json: outputs/pilot_v0/analysis/step11/step11_validation_summary.json
+  step11_figures_dir: outputs/pilot_v0/analysis/step11/figures
+  step11_analysis_spec_manifest: outputs/pilot_v0/manifests/step11_analysis_spec_manifest.json
+  step11_analysis_spec_hashes: outputs/pilot_v0/manifests/step11_analysis_spec_hashes.txt
+  step11_final_freeze_manifest: outputs/pilot_v0/manifests/step11_system_analysis_freeze_manifest.json
+  step11_final_hashes: outputs/pilot_v0/manifests/step11_final_hashes.txt

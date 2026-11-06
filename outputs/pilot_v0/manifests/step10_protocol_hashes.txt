@@ -1,0 +1,6 @@
+Step 10 protocol SHA-256 hashes
+
+bbd39623106837e91e4da0ff70078f0495c6db833213accab6dcda879186d2ff  config_step10.yaml
+ad829d67261bb1b4cb8f91a381d51c2cfad038a7b9276e06c520e4c3d6ae2b72  STEP10_PROTOCOL.md
+c56a11aa385dc2036b0a7faa33e629364835d89e0e70c09dca3c71011a9bcfa3  outputs/pilot_v0/adaptive/step10/candidate_manifest.jsonl
+23e5f4a1d67f71757089ba5c91108dc2971ea54619a72a029c37942c05e0364e  outputs/pilot_v0/adaptive/step10/trajectory_manifest.jsonl

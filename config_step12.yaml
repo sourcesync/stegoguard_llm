@@ -1,0 +1,93 @@
+seed: 121042
+
+step12_robustness:
+  protocol_version: step12_robustness_v1
+  input_protocol_versions:
+    step8: step8_static_v1
+    step9: step9_mitigation_v1
+    step10: step10_adaptive_v1
+    step11: step11_system_analysis_v1
+
+  expected_parent_count: 48
+  expected_trajectory_count: 288
+  expected_stego_rows: 1152
+  expected_clean_rows: 384
+  round_ids: [0, 1, 2, 3]
+  adaptive_rounds: [1, 2, 3]
+  endpoint_round: 3
+
+  attacker_conditions:
+    - frozen_no_feedback
+    - fixed_channel_feedback
+    - channel_migration_feedback
+  defender_policies:
+    - deterministic_rewrite
+    - randomized_rewrite
+  condition_contrasts:
+    - [fixed_channel_feedback, frozen_no_feedback]
+    - [channel_migration_feedback, frozen_no_feedback]
+    - [channel_migration_feedback, fixed_channel_feedback]
+  defender_contrast: [randomized_rewrite, deterministic_rewrite]
+  primary_comparison_rounds: [1, 2, 3]
+  primary_outcomes:
+    - successful_covert_bits
+    - exact_payload_recovery
+
+  bootstrap_replicates: 2000
+  randomization_replicates: 20000
+  fdr_alpha: 0.05
+  alternative_leakage_outcomes:
+    - effective_bit_accuracy
+    - residual_capacity_bits
+  history_values:
+    - rank_encoding
+    - synonym_slot_codebook
+  heterogeneity_fields:
+    - source_model
+    - domain
+    - nominal_target_length
+
+  interpretation_rules:
+    robustness_does_not_create_new_experiment: true
+    use_effect_sizes_with_uncertainty_not_p_values_alone: true
+    leave_one_out_is_influence_not_replication: true
+    stratified_results_are_sensitivity_not_confirmatory_subgroups: true
+    exact_failure_is_not_zero_leakage: true
+    no_equilibrium_emergence_or_long_run_claims: true
+    no_universal_randomization_advantage: true
+
+paths:
+  step8_freeze_manifest: outputs/pilot_v0/manifests/step8_static_detection_manifest.json
+  step8_metrics: outputs/pilot_v0/detection/step8/metrics.json
+  step8_summary: outputs/pilot_v0/detection/step8/static_detection_summary.json
+  step9_freeze_manifest: outputs/pilot_v0/manifests/step9_mitigation_freeze_manifest.json
+  step9_summary: outputs/pilot_v0/mitigation/step9/mitigation_summary.json
+  step10_freeze_manifest: outputs/pilot_v0/manifests/step10_adaptive_freeze_manifest.json
+  step10_round_dir_template: outputs/pilot_v0/adaptive/step10/round_{round_id}
+  step11_freeze_manifest: outputs/pilot_v0/manifests/step11_system_analysis_freeze_manifest.json
+  step11_validation_summary: outputs/pilot_v0/analysis/step11/step11_validation_summary.json
+  step11_summary: outputs/pilot_v0/analysis/step11/step11_system_analysis.json
+
+  step12_output_dir: outputs/pilot_v0/analysis/step12
+  step12_summary_json: outputs/pilot_v0/analysis/step12/step12_robustness_summary.json
+  step12_randomization_tests_csv: outputs/pilot_v0/analysis/step12/step12_randomization_tests.csv
+  step12_r3_influence_summary_csv: outputs/pilot_v0/analysis/step12/step12_r3_influence_summary.csv
+  step12_loo_parent_csv: outputs/pilot_v0/analysis/step12/step12_r3_leave_one_parent.csv
+  step12_loo_cell_csv: outputs/pilot_v0/analysis/step12/step12_r3_leave_one_cell.csv
+  step12_alternative_leakage_csv: outputs/pilot_v0/analysis/step12/step12_r3_alternative_leakage.csv
+  step12_adaptive_window_csv: outputs/pilot_v0/analysis/step12/step12_adaptive_window_contrasts.csv
+  step12_history_conditioned_csv: outputs/pilot_v0/analysis/step12/step12_history_conditioned_r3.csv
+  step12_heterogeneity_csv: outputs/pilot_v0/analysis/step12/step12_heterogeneity_r3.csv
+  step12_clean_cell_metrics_csv: outputs/pilot_v0/analysis/step12/step12_clean_cell_metrics.csv
+  step12_static_ablation_reference_csv: outputs/pilot_v0/analysis/step12/step12_static_ablation_reference.csv
+  step12_cross_stage_reference_csv: outputs/pilot_v0/analysis/step12/step12_cross_stage_reference.csv
+  step12_claim_stability_json: outputs/pilot_v0/analysis/step12/step12_claim_stability.json
+  step12_interpretation_md: outputs/pilot_v0/analysis/step12/step12_robustness_interpretation.md
+  step12_qa_review_txt: outputs/pilot_v0/analysis/step12/step12_qa_review.txt
+  step12_validation_summary_json: outputs/pilot_v0/analysis/step12/step12_validation_summary.json
+  step12_figures_dir: outputs/pilot_v0/analysis/step12/figures
+
+  step12_analysis_spec_manifest: outputs/pilot_v0/manifests/step12_analysis_spec_manifest.json
+  step12_analysis_spec_hashes: outputs/pilot_v0/manifests/step12_analysis_spec_hashes.txt
+  step12_final_freeze_manifest: outputs/pilot_v0/manifests/step12_robustness_freeze_manifest.json
+  step12_final_hashes: outputs/pilot_v0/manifests/step12_final_hashes.txt

@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "stegoguard-lm"
+version = "0.1.0"
+description = "Controlled evaluation of end-to-end protection against covert channels in LLM outputs"
+readme = "README.md"
+requires-python = ">=3.10"
+# Lower bounds only. Pin exact versions from the environment that produced
+# outputs/pilot_v0 before release (see README, "Environment").
+dependencies = [
+    "numpy",
+    "scikit-learn",
+    "pyyaml",
+    "matplotlib",
+    "tqdm",
+]
+
+[project.optional-dependencies]
+# Needed for generation, rank encoding/decoding, evaluator features and
+# rewriting. Not needed for the model-free tests or the Step 11-12 analyses.
+models = [
+    "torch",
+    "transformers",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]

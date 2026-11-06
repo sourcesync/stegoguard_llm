@@ -1,0 +1,395 @@
+
+project_name: stegoguard_lm
+seed: 42
+
+metadata:
+  manifest_version: "pilot_v0"
+  
+models:
+  sources:
+    - id: "Qwen/Qwen2.5-7B-Instruct"
+      role: "source"
+    - id: "mistralai/Mistral-7B-Instruct-v0.3"
+      role: "source"
+  evaluators:
+    - id: "google/gemma-2-2b-it"
+      role: "evaluator_a"
+    - id: "Qwen/Qwen2.5-3B-Instruct"
+      role: "evaluator_b"
+  optional_evaluators:
+    - id: "mistralai/Mistral-7B-Instruct-v0.3"
+      role: "optional_evaluator_b_for_full_runs"
+      enabled: false
+
+pilot:
+  enabled: true
+  domains:
+    - conversational
+    - technical
+  lengths:
+    - 64
+    - 256
+  pairs_per_condition: 20
+  clean_replicates_per_prompt: 4
+  conflict_topics_per_domain: 1
+  conflict_pairs_per_condition: 5
+
+  mini_pilot:
+    enabled: true
+    domains:
+      - conversational
+    lengths:
+      - 64
+    source_models:
+      - "Qwen/Qwen2.5-7B-Instruct"
+    attacks:
+      - out_of_band
+      - token_blackbox
+    pairs_per_attack: 5
+    clean_replicates_per_prompt: 1
+
+attacks:
+  payload:
+    payload_type: "bitstring"
+    derivation: "sha256_deterministic"
+    base_seed: 4206
+
+  smoke:
+    default_sample_id: "clean_conv_001_64_qwen_000"
+    core_sample_ids:
+      - "clean_conv_001_64_qwen_000"
+      - "clean_tech_001_256_qwen_000"
+      - "clean_conv_001_64_mistral_000"
+      - "clean_tech_001_256_mistral_000"
+
+  token_whitebox:
+    enabled: true
+    name: "rank_encoding"
+    attacker_access: "white_box"
+    target_length_field: "actual_token_length"
+    exact_token_match_required: true
+    exact_bitstring_match_required: true
+    top_k: 8
+    rank_partition: "keyed_parity"
+    bits_per_encoded_token: 1
+    max_encoding_attempts: 5
+    require_complete_ending: true
+    require_tokenizer_roundtrip: true
+    final_token_policy: "sentence_ending_candidates"
+    final_candidate_search_k: 128
+
+  token_blackbox:
+    enabled: true
+    name: "synonym_slot_codebook"
+    attacker_access: "black_box_tokenizer_aware"
+    strategy_id: "synonym_inplace_substitution"
+    strategy_version: "synonym_slots_v1+inplace_v1"
+    target_length_field: "actual_token_length"
+    exact_token_match_required: true
+    exact_bitstring_match_required: true
+    codebook_path: "data/attacks/synonym_codebook.yaml"
+    codebook_version: "synonym_slots_v1"
+    max_payload_bits: 8
+    min_payload_bits: 1
+    payload_nonce_attempts: 16
+    require_text_change: true
+    forbid_format_codepoints: true
+    require_complete_ending: true
+    require_tokenizer_roundtrip: true
+    note: "V4 uses tokenizer-verified in-place lexical substitution on the frozen clean cover; capacity is variable by cover text."
+
+  out_of_band:
+    enabled: true
+    name: "unicode_hidden_channel"
+    attacker_access: "text_transformation"
+    exact_codepoint_match_required: true
+    payload_bits: 8
+    framing_version: "unicode_frame_v1"
+    bit_zero_codepoint: "\u200B"
+    bit_one_codepoint: "\u200C"
+    prefix_codepoint: "\u2063"
+    suffix_codepoint: "\u2064"
+    embed_position: "before_final_visible_punctuation"
+    visible_text_exact_after_strip: true
+
+semantic_channel:
+  enabled: false
+  note: "deferred to post-pilot full experiments"
+
+
+#step 12 correction here. Before the adaptive evaluation, we will define two separate conditions:fixed-channel adaptation, where attack_family remains forbidden
+#channel-migration adaptation, where switching among a bounded set of attack families is allowed
+adaptive_attacker:
+  enabled: true
+  search_budget_pilot: 10
+  allowed_changes:
+    - prompt_wording
+    - style_guidance
+    - bounded_decoding_params
+  forbidden_changes:
+    - payload
+    - target_token_length
+    - attack_family
+
+
+full_attack_generation:
+  enabled: true
+  expected_clean_parents: 160
+  expected_attack_opportunities: 480
+  structural_ineligibility:
+    synonym_zero_capacity: true
+    classify_as_failure: false
+  synonym_payload_policy: "use_full_available_capacity"
+  retry_policy:
+    resume_completed: true
+    retry_terminal_failures: false
+  immediate_disk_write: true
+  round_id: 0
+  adaptive: false
+  feedback_condition: "none"
+
+static_detection:
+  enabled: true
+  protocol_version: "step8_static_v1"
+  evaluator_freeze_note: "Step 8 freezes instruction-tuned evaluator variants because scoring is conditioned on the visible prompt and semantic features require deterministic instruction following."
+  expected_clean_records: 160
+  expected_accepted_stego_records: 423
+  expected_detection_records: 583
+  expected_common_parent_count: 104
+  expected_common_population_records: 416
+  balanced_common_parents_per_cell: 6
+  expected_balanced_common_parent_count: 48
+  expected_balanced_population_records: 192
+  expected_topic_count: 10
+  primary_population: "common_all_three"
+  outer_split_strategy: "leave_one_topic_out"
+  semantic_evaluator_role: "evaluator_a"
+  semantic_paraphrase_max_extra_tokens: 32
+  tail_logp_quantile: 0.05
+  operating_points_fpr:
+    - 0.05
+    - 0.01
+  bootstrap_replicates: 2000
+  bootstrap_cluster_field: "clean_parent_id"
+  qa_review_limit: 20
+  logistic_regression:
+    C: 1.0
+    max_iter: 2000
+    solver: "liblinear"
+    class_balance: "equal_class_mass"
+  unicode_hygiene:
+    enabled: true
+    report_separately: true
+    deployed_override: true
+  leakage_policy:
+    detector_inputs:
+      - prompt
+      - text
+    analysis_only_fields:
+      - label
+      - attack_name
+      - attack_family
+      - source_model
+      - domain
+      - topic_id
+      - nominal_target_length
+      - payload_bit_length
+      - payload_rate_bpt
+
+mitigation_evaluation:
+  enabled: true
+  protocol_version: "step9_mitigation_v1"
+  rewriter_role: "evaluator_a"
+  expected_detection_records: 583
+  expected_primary_records: 416
+  expected_clean_records: 160
+  primary_population: "common_all_three"
+  bootstrap_replicates: 2000
+
+  unicode_sanitization:
+    enabled: true
+    normalization_form: "NFC"
+    remove_all_format_codepoints: true
+
+  deterministic_rewrite:
+    enabled: true
+    fixed_realizations_per_input: 1
+
+  randomized_rewrite:
+    enabled: true
+    seeds:
+      - 9101
+      - 9102
+      - 9103
+
+  rewriter_generation:
+    max_length_ratio: 1.30
+    max_extra_tokens: 48
+    hard_cap_new_tokens: 420
+    randomized_temperature: 0.8
+    randomized_top_p: 0.90
+
+  payload_evaluation:
+    exact_recovery_primary: true
+    bit_accuracy_secondary: true
+    decoder_failure_reported_separately: true
+    residual_capacity_reported: true
+
+  utility:
+    evaluator_role: "evaluator_a"
+    semantic_similarity: true
+    visible_instruction_retention: true
+    distributional_fluency: true
+    response_length_change: true
+
+  gated_deployment:
+    enabled: true
+    detector_experiment: "primary_common_all"
+    detector_variant: "full_fusion"
+    operating_points:
+      - "f1"
+      - "fpr_01"
+    unicode_hygiene_override: true
+    compare_rewrite_policies:
+      - "deterministic_rewrite"
+      - "randomized_rewrite"
+
+  resume_policy:
+    immediate_disk_write: true
+    retry_terminal_generation_failures: false
+
+generation:
+  same_length_definition: "exact_pairwise_token_length_under_source_tokenizer"
+  length_policy: "complete_sentence_near_nominal_target"
+  length_tolerance_by_target:
+    64: 8
+    256: 16
+  temperature: 0.7
+  top_p: 0.95
+  max_regeneration_attempts: 5
+  extra_new_tokens_for_length_control: 40
+  
+  
+
+detection_features:
+  distributional:
+    - mean_logp
+    - ppl
+    - logp_var
+    - tail_05_frac
+    - sentence_logp_var
+  cross_model:
+    - delta_mean_logp
+    - delta_ppl
+    - delta_tail_05_frac
+    - abs_delta_mean_logp
+    - abs_delta_ppl
+  semantic:
+    - paraphrase_embedding_similarity
+    - visible_instruction_retention
+  out_of_band:
+    - nonprinting_count
+    - zero_width_count
+    - unicode_tag_count
+    - has_suspicious_codepoint
+
+mitigations:
+  - unicode_sanitization
+  - deterministic_rewriting
+  - randomized_rewriting
+
+metrics:
+  detection:
+    - roc_auc
+    - pr_auc
+    - precision
+    - recall
+    - f1
+    - tpr_at_fpr_5
+    - tpr_at_fpr_1
+  exploratory_detection:
+    - tpr_at_fpr_0_1
+  disruption:
+    - decode_success_rate
+    - exact_match_recovery
+  utility:
+    - semantic_similarity
+    - consistency_check
+
+paths:
+  topics_csv: "data/topics/topics.csv"
+  conflict_templates_csv: "data/topics/conflict_templates.csv"
+  output_dir: "outputs/pilot_v0"
+  rendered_prompts_jsonl: "outputs/pilot_v0/prompts/rendered_prompts.jsonl"
+  prompt_preview_txt: "outputs/pilot_v0/prompts/prompt_preview.txt"
+  prompt_summary_json: "outputs/pilot_v0/prompts/prompt_summary.json"
+  clean_output_dir: "outputs/pilot_v0/clean"
+  clean_samples_mini_jsonl: "outputs/pilot_v0/clean/clean_samples_mini.jsonl"
+  clean_samples_full_jsonl: "outputs/pilot_v0/clean/clean_samples_full.jsonl"
+  clean_failures_mini_jsonl: "outputs/pilot_v0/clean/clean_failures_mini.jsonl"
+  clean_failures_full_jsonl: "outputs/pilot_v0/clean/clean_failures_full.jsonl"
+  synonym_codebook_yaml: "data/attacks/synonym_codebook.yaml"
+  attack_smoke_output_dir: "outputs/pilot_v0/attacks/smoke"
+  attack_smoke_samples_jsonl: "outputs/pilot_v0/attacks/smoke/attack_smoke_samples.jsonl"
+  attack_smoke_failures_jsonl: "outputs/pilot_v0/attacks/smoke/attack_smoke_failures.jsonl"
+  attack_smoke_preview_txt: "outputs/pilot_v0/attacks/smoke/attack_smoke_preview.txt"
+  attack_smoke_summary_json: "outputs/pilot_v0/attacks/smoke/attack_smoke_summary.json"
+  step5_clean_corpus_manifest_json: "outputs/pilot_v0/manifests/step5_clean_corpus_manifest.json"
+  synonym_capacity_json: "outputs/pilot_v0/manifests/synonym_inplace_capacity.json"
+  attack_full_output_dir: "outputs/pilot_v0/attacks/full"
+  attack_task_manifest_jsonl: "outputs/pilot_v0/attacks/full/attack_task_manifest.jsonl"
+  attack_structural_ineligible_jsonl: "outputs/pilot_v0/attacks/full/attack_structural_ineligible.jsonl"
+  attack_full_samples_jsonl: "outputs/pilot_v0/attacks/full/stego_samples_full.jsonl"
+  attack_full_failures_jsonl: "outputs/pilot_v0/attacks/full/stego_failures_full.jsonl"
+  attack_full_preview_txt: "outputs/pilot_v0/attacks/full/stego_preview_full.txt"
+  attack_full_summary_json: "outputs/pilot_v0/attacks/full/stego_summary_full.json"
+  attack_generation_manifest_json: "outputs/pilot_v0/manifests/step7_attack_generation_manifest.json"
+  detection_output_dir: "outputs/pilot_v0/detection/step8"
+  detection_dataset_jsonl: "outputs/pilot_v0/detection/step8/detection_dataset.jsonl"
+  detection_dataset_manifest_json: "outputs/pilot_v0/detection/step8/detection_dataset_manifest.json"
+  detection_splits_json: "outputs/pilot_v0/detection/step8/splits.json"
+  detection_unicode_features_jsonl: "outputs/pilot_v0/detection/step8/features/unicode_features.jsonl"
+  detection_unicode_summary_json: "outputs/pilot_v0/detection/step8/features/unicode_summary.json"
+  detection_evaluator_a_features_jsonl: "outputs/pilot_v0/detection/step8/features/evaluator_a_distributional.jsonl"
+  detection_evaluator_a_summary_json: "outputs/pilot_v0/detection/step8/features/evaluator_a_summary.json"
+  detection_evaluator_b_features_jsonl: "outputs/pilot_v0/detection/step8/features/evaluator_b_distributional.jsonl"
+  detection_evaluator_b_summary_json: "outputs/pilot_v0/detection/step8/features/evaluator_b_summary.json"
+  detection_semantic_features_jsonl: "outputs/pilot_v0/detection/step8/features/semantic_features.jsonl"
+  detection_semantic_summary_json: "outputs/pilot_v0/detection/step8/features/semantic_summary.json"
+  detection_feature_manifest_json: "outputs/pilot_v0/detection/step8/features/feature_manifest.json"
+  detection_predictions_jsonl: "outputs/pilot_v0/detection/step8/predictions.jsonl"
+  detection_metrics_json: "outputs/pilot_v0/detection/step8/metrics.json"
+  detection_summary_json: "outputs/pilot_v0/detection/step8/static_detection_summary.json"
+  detection_false_positive_review_txt: "outputs/pilot_v0/detection/step8/false_positive_review.txt"
+  detection_false_negative_review_txt: "outputs/pilot_v0/detection/step8/false_negative_review.txt"
+  detection_freeze_manifest_json: "outputs/pilot_v0/manifests/step8_static_detection_manifest.json"
+  detection_final_hashes_txt: "outputs/pilot_v0/manifests/step8_final_hashes.txt"
+  step8_frozen_config_yaml: "outputs/pilot_v0/manifests/step8_frozen_config.yaml"
+  mitigation_output_dir: "outputs/pilot_v0/mitigation/step9"
+  mitigation_task_manifest_jsonl: "outputs/pilot_v0/mitigation/step9/mitigation_task_manifest.jsonl"
+  mitigation_manifest_json: "outputs/pilot_v0/manifests/step9_mitigation_manifest.json"
+  mitigation_outputs_jsonl: "outputs/pilot_v0/mitigation/step9/mitigated_outputs.jsonl"
+  mitigation_failures_jsonl: "outputs/pilot_v0/mitigation/step9/mitigation_failures.jsonl"
+  mitigation_payload_results_jsonl: "outputs/pilot_v0/mitigation/step9/payload_results.jsonl"
+  mitigation_utility_jsonl: "outputs/pilot_v0/mitigation/step9/utility_results.jsonl"
+  mitigation_gated_results_jsonl: "outputs/pilot_v0/mitigation/step9/gated_results.jsonl"
+  mitigation_summary_json: "outputs/pilot_v0/mitigation/step9/mitigation_summary.json"
+  mitigation_qa_review_txt: "outputs/pilot_v0/mitigation/step9/mitigation_qa_review.txt"
+  mitigation_freeze_manifest_json: "outputs/pilot_v0/manifests/step9_mitigation_freeze_manifest.json"
+  mitigation_final_hashes_txt: "outputs/pilot_v0/manifests/step9_final_hashes.txt"
+
+prompt_rendering:
+  standard_template_version: "v1"
+  conflict_templates_for_pilot:
+    - conflict_keyword
+    - conflict_format
+  output_subdir: "prompts"
+  preview_limit: 20
+
+prompt_templates:
+  standard:
+    conversational: "assistant_style_v1"
+    technical: "technical_explanation_v1"
+  conflict:
+    enabled: true
+    hidden_payload_must_be_separate: true
