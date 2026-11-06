@@ -33,7 +33,7 @@ stegoguard-lm/
 ├── tests/                      unit tests
 ├── data/                       small inputs: topics, prompt templates, synonym codebook
 ├── outputs/pilot_v0/           frozen results: CSVs, figures, QA reviews, hash manifests
-└── docs/                       index of step documents, planning notes, figures
+└── docs/                       step-document index, diagrams, planning notes, figures
 ```
 
 The protocol documents, configs, scripts, and source modules stay at the paths where they were frozen. Each step's freeze manifest records file paths relative to the repository root, so moving these files would break verification. See [Frozen artifacts](#frozen-artifacts-and-verification).
