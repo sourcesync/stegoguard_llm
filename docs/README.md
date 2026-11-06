@@ -21,6 +21,10 @@ The running instructions were written for Windows PowerShell with
 `$env:PYTHONPATH="src"`. After `pip install -e .` that setting is unnecessary;
 `<repo-root>` stands for the local checkout path.
 
+## Diagrams
+
+See [`diagrams/`](diagrams/README.md) for the adaptive replay threat models and a recorded example trace.
+
 ## Other material
 
 - `planning/new_mcs_inclusive_plan.docx`: experiment plan (July 2026).
