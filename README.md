@@ -31,6 +31,7 @@ stegoguard-lm/
 │   └── prompt_rendering.py
 ├── scripts/                    one entry point per pipeline stage (see scripts/README.md)
 ├── explorer/                   source for the interactive results explorer page
+├── app/                        Cloud Run service that serves the explorer
 ├── tests/                      unit tests
 ├── data/                       small inputs: topics, prompt templates, synonym codebook
 ├── outputs/pilot_v0/           frozen results: CSVs, figures, QA reviews, hash manifests
@@ -108,6 +109,25 @@ python scripts/build_explorer_page.py        # writes outputs/explorer/index.htm
 ```
 
 `index.html` is self-contained (the data is embedded), so open it directly in a browser or host it as a static file. It is derived data and is not tracked in git. Fonts load from Google Fonts when online and fall back to system fonts otherwise. If the explorer is published with the review copy, it contains the full model outputs, including the stego texts.
+
+### Deploying the explorer to Cloud Run
+
+`app/` is a small Flask service (served by gunicorn) that returns the explorer page at `/` and the results bundle at `/api/bundle`. It is meant to grow into a dynamic app later. The data is baked into the container image at deploy time, so nothing from `outputs/pilot_v0` is stored in git or read at run time.
+
+```bash
+gcloud auth login
+gcloud config set project YOUR-PROJECT
+scripts/deploy_explorer.sh                  # exports the bundle, builds the page, deploys
+```
+
+The service is deployed with `--no-allow-unauthenticated`. Give each collaborator access with the Cloud Run Invoker role:
+
+```bash
+gcloud run services add-iam-policy-binding stegoguard-explorer \
+    --region us-west1 --member user:someone@example.com --role roles/run.invoker
+```
+
+They can then reach it through `gcloud run services proxy stegoguard-explorer --region us-west1` (opens on localhost). For sign-in from a plain browser, put Identity-Aware Proxy in front of the service; check the current Cloud Run documentation for how. The first deploy asks to enable the Cloud Run, Cloud Build and Artifact Registry APIs. `SERVICE`, `REGION` and `PROJECT` can be set as environment variables. Anyone who can open the service can read the full model outputs in the bundle.
 
 ## Review notes
 
