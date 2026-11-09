@@ -104,3 +104,4 @@ After R3:
 
 - `verify_code_hashes.py`: checks the working tree against all freeze manifests, skipping files that are absent (such as the untracked data). Added after the experiments; it is not itself hashed.
 - `export_explorer_bundle.py`: writes `outputs/explorer/explorer_bundle.json`, a compact JSON of detector predictions and all adaptive trajectories (see the main README, "Results bundle"). Needs the data bundle. Added after the experiments; not hashed.
+- `build_explorer_page.py`: embeds that bundle in `explorer/template.html` and writes `outputs/explorer/index.html`, a self-contained results explorer. Added after the experiments; not hashed.

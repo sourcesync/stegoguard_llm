@@ -30,6 +30,7 @@ stegoguard-lm/
 │   ├── clean_generation.py
 │   └── prompt_rendering.py
 ├── scripts/                    one entry point per pipeline stage (see scripts/README.md)
+├── explorer/                   source for the interactive results explorer page
 ├── tests/                      unit tests
 ├── data/                       small inputs: topics, prompt templates, synonym codebook
 ├── outputs/pilot_v0/           frozen results: CSVs, figures, QA reviews, hash manifests
@@ -96,6 +97,17 @@ It requires the data bundle to be unpacked. The output contains:
 - `texts`: a deduplicated text table referenced by index.
 
 The output is derived data and is not tracked in git. Recomputing from it reproduces the pooled AUROC (0.9037), the per-channel AUROCs, the gate counts in Table 5, and the Table 6 totals.
+
+## Results explorer
+
+`explorer/template.html` is a single-page viewer for the bundle. The **Detector** tab recomputes flagged rates and AUROC per channel for any feature set and threshold, with a strip plot of the out-of-fold scores. The **Replay** tab shows the Table 6 totals and lets you step through any of the 288 trajectories, round by round, with the detector votes, the sent and delivered text, and the decode result.
+
+```bash
+python scripts/export_explorer_bundle.py     # needs the data bundle
+python scripts/build_explorer_page.py        # writes outputs/explorer/index.html
+```
+
+`index.html` is self-contained (the data is embedded), so open it directly in a browser or host it as a static file. It is derived data and is not tracked in git. Fonts load from Google Fonts when online and fall back to system fonts otherwise. If the explorer is published with the review copy, it contains the full model outputs, including the stego texts.
 
 ## Review notes
 

@@ -1,0 +1,204 @@
+<title>StegoGuard Results Explorer</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap">
+<style>
+/* Layout: sticky header with two tabs; Detector = controls + per-channel table + score strips; Replay = Table 6 summary + trajectory browser with round cards. */
+:root{
+  --bg:#f3f5f6; --surface:#ffffff; --fg:#14232b; --muted:#5b6c75; --line:#d6dee2;
+  --accent:#0f5d73; --accent-soft:#dcedf2;
+  --c-clean:#6b7c86; --c-rank:#b4481f; --c-syn:#2b6cc4; --c-uni:#7a4fb0;
+  --good:#1f7a4d; --bad:#b3261e; --warn:#8a6100; --warn-soft:#f6ebc9; --bad-soft:#f8dcd9; --good-soft:#d8efe2;
+  --font-display:'Newsreader',Georgia,serif; --font-body:'IBM Plex Sans',system-ui,sans-serif; --font-mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0d171c; --surface:#142229; --fg:#e4edf0; --muted:#97a9b2; --line:#26373f;
+  --accent:#5fc0d9; --accent-soft:#17353f;
+  --c-clean:#97a9b2; --c-rank:#f08a5d; --c-syn:#6aa6f0; --c-uni:#b48ae6;
+  --good:#58c78e; --bad:#ff8f86; --warn:#e6c25a; --warn-soft:#3a3218; --bad-soft:#3d1f1d; --good-soft:#163628; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0d171c; --surface:#142229; --fg:#e4edf0; --muted:#97a9b2; --line:#26373f;
+  --accent:#5fc0d9; --accent-soft:#17353f;
+  --c-clean:#97a9b2; --c-rank:#f08a5d; --c-syn:#6aa6f0; --c-uni:#b48ae6;
+  --good:#58c78e; --bad:#ff8f86; --warn:#e6c25a; --warn-soft:#3a3218; --bad-soft:#3d1f1d; --good-soft:#163628; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:14px/1.5 var(--font-body);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 48px}
+.wrap{max-width:1080px;margin:0 auto}
+header{padding:24px 0 12px}
+h1{font:600 28px/1.15 var(--font-display);margin:0;text-wrap:balance}
+header p{margin:6px 0 0;color:var(--muted);max-width:68ch}
+nav{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:12px 0 20px}
+nav button{font:500 14px var(--font-body);background:none;border:0;color:var(--muted);padding:10px 14px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
+nav button[aria-selected="true"]{color:var(--accent);border-color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:16px;min-width:0}
+.row{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-end;margin-bottom:16px}
+label{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;min-width:0}
+select,input[type=range]{font:14px var(--font-body);color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:6px 8px;max-width:100%}
+input[type=range]{padding:0;accent-color:var(--accent);width:240px}
+h2{font:600 20px/1.2 var(--font-display);margin:0 0 8px}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+th,td{padding:7px 10px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+th{font:500 12px var(--font-body);color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px}
+.note{color:var(--muted);font-size:13px;max-width:72ch}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:760px){.grid2{grid-template-columns:1fr}}
+.stack{display:flex;flex-direction:column;gap:16px}
+svg text{fill:var(--muted);font:11px var(--font-mono)}
+.mono{font-family:var(--font-mono);font-size:12.5px}
+.pill{display:inline-block;font:500 11px var(--font-body);padding:2px 8px;border-radius:10px;letter-spacing:.03em}
+.pill.good{background:var(--good-soft);color:var(--good)} .pill.bad{background:var(--bad-soft);color:var(--bad)} .pill.warn{background:var(--warn-soft);color:var(--warn)} .pill.neutral{background:var(--accent-soft);color:var(--accent)}
+.round{border:1px solid var(--line);border-radius:6px;padding:12px;background:var(--surface);min-width:0}
+.round h3{margin:0 0 6px;font:600 13px var(--font-body);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;font-size:13px}
+.kv dt{color:var(--muted)} .kv dd{margin:0;min-width:0;overflow-wrap:anywhere}
+details{margin-top:8px} summary{cursor:pointer;color:var(--accent);font-size:13px}
+.txt{white-space:pre-wrap;overflow-wrap:anywhere;background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:8px;margin:6px 0 0;font-size:13px;max-height:260px;overflow:auto}
+.zw{background:var(--warn-soft);color:var(--warn);font:500 10px var(--font-mono);padding:0 2px;border-radius:2px}
+.rounds{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+</style>
+
+<div class="wrap">
+<header>
+  <h1>StegoGuard Results Explorer</h1>
+  <p>Frozen pilot_v0 results for the StegoGuard-LM draft: out-of-fold detector scores for 104 matched parents and all 288 adaptive replay trajectories. Everything is recomputed in the page from the records.</p>
+</header>
+<nav role="tablist">
+  <button role="tab" id="tab-det" aria-selected="true">Detector</button>
+  <button role="tab" id="tab-rep" aria-selected="false">Replay</button>
+</nav>
+
+<section id="view-det" class="stack">
+  <div class="panel">
+    <div class="row">
+      <label>Feature set<select id="variant"></select></label>
+      <label>Threshold<select id="gate"></select></label>
+      <label id="slider-wrap">Score cutoff <span class="mono" id="cut-val"></span><input type="range" id="cut" min="0" max="1" step="0.005" value="0.5"></label>
+    </div>
+    <div class="scroll"><table id="det-table"></table></div>
+    <p class="note" id="det-note"></p>
+  </div>
+  <div class="panel">
+    <h2>Score distribution by channel</h2>
+    <p class="note">Each dot is one record, out-of-fold. The vertical line is the cutoff. Records right of it are flagged.</p>
+    <div class="scroll"><svg id="strip" role="img" aria-label="Score strip plot by channel"></svg></div>
+  </div>
+</section>
+
+<section id="view-rep" class="stack" hidden>
+  <div class="panel">
+    <h2>Successful bits, R0 to R3</h2>
+    <p class="note">Sum of payload bits whose exact recovery succeeded, over 48 parents. Repeated deliveries of the same message each count, as in the paper's Table 6.</p>
+    <div class="scroll"><table id="t6"></table></div>
+  </div>
+  <div class="panel">
+    <h2>Trajectory browser</h2>
+    <div class="row">
+      <label>Parent<select id="parent"></select></label>
+      <label>Attacker policy<select id="pol"><option value="frozen">Frozen</option><option value="fixed">Fixed channel</option><option value="migration" selected>Migration</option></select></label>
+      <label>Rewriter<select id="def"><option value="det">Deterministic</option><option value="rand">Randomized</option></select></label>
+    </div>
+    <div id="parent-info"></div>
+  </div>
+  <div class="rounds" id="rounds"></div>
+</section>
+</div>
+
+<script>
+const B = /*DATA*/null;
+const CH = {c:['Clean','--c-clean'], r:['Rank','--c-rank'], s:['Synonym','--c-uni'], u:['Unicode','--c-uni']};
+CH.s = ['Synonym','--c-syn'];
+const VAR = {
+  full_deployed_with_unicode_hygiene:'Full fusion + Unicode override (deployed)', full_fusion:'Full fusion', distributional:'Distributional only',
+  cross_model:'Cross-model only', semantic:'Semantic only', distributional_cross_model:'Distributional + cross-model',
+  distributional_semantic:'Distributional + semantic', cross_model_semantic:'Cross-model + semantic'};
+const GATES = {f1:['F1 gate',3], fpr05:['5% FPR gate',4], fpr01:['1% FPR gate',5], custom:['Custom cutoff',-1]};
+const $ = id => document.getElementById(id);
+const dotHtml = k => `<span class="dot" style="background:var(${CH[k][1]})"></span>`;
+
+function auroc(pos, neg){ // Mann-Whitney with ties
+  let w = 0; for (const p of pos) for (const n of neg) w += p>n ? 1 : p===n ? .5 : 0;
+  return w/(pos.length*neg.length);
+}
+/* ---------- Detector ---------- */
+$('variant').innerHTML = Object.keys(VAR).map(k=>`<option value="${k}">${VAR[k]}</option>`).join('');
+$('gate').innerHTML = Object.entries(GATES).map(([k,v])=>`<option value="${k}">${v[0]}</option>`).join('');
+function drawDet(){
+  const v=$('variant').value, g=$('gate').value, rows=B.op[v], cut=+$('cut').value;
+  $('slider-wrap').hidden = g!=='custom'; $('cut-val').textContent = cut.toFixed(3);
+  const flag = r => g==='custom' ? r[0]>=cut : !!r[GATES[g][1]];
+  const by = {c:[],r:[],s:[],u:[]}; rows.forEach(r=>by[r[2]].push(r));
+  const clean = by.c.map(r=>r[0]);
+  let html = '<tr><th>Channel</th><th>Records</th><th>Flagged</th><th>Rate</th><th>AUROC vs clean</th></tr>';
+  for (const k of ['c','r','s','u']){
+    const n = by[k].length, f = by[k].filter(flag).length;
+    html += `<tr><td>${dotHtml(k)}${CH[k][0]}${k==='c'?' (false positives)':''}</td><td>${n}</td><td>${f}</td><td>${(100*f/n).toFixed(1)}%</td><td>${k==='c'?'':auroc(by[k].map(r=>r[0]),clean).toFixed(4)}</td></tr>`;
+  }
+  const atk=['r','s','u'].map(k=>auroc(by[k].map(r=>r[0]),clean));
+  html += `<tr><td><strong>Pooled</strong> (mean of three)</td><td>${rows.length}</td><td></td><td></td><td><strong>${(atk.reduce((a,b)=>a+b)/3).toFixed(4)}</strong></td></tr>`;
+  $('det-table').innerHTML = html;
+  $('det-note').textContent = g==='custom' ? 'Cutoff applied to the pooled out-of-fold scores.' : 'Gate decisions are the per-fold thresholds chosen by nested calibration, as recorded in the predictions.';
+  drawStrip(by, g, cut, flag);
+}
+function drawStrip(by, g, cut, flag){
+  const W=900,H=250,L=80,R=20,T=14,Bm=30, keys=['c','r','s','u'], bandH=(H-T-Bm)/4;
+  let s=''; const x=v=>L+v*(W-L-R);
+  for(let t=0;t<=1;t+=.25) s+=`<line x1="${x(t)}" x2="${x(t)}" y1="${T}" y2="${H-Bm}" stroke="var(--line)"/><text x="${x(t)}" y="${H-Bm+16}" text-anchor="middle">${t.toFixed(2)}</text>`;
+  keys.forEach((k,i)=>{
+    const y0=T+i*bandH; s+=`<text x="${L-8}" y="${y0+bandH/2+4}" text-anchor="end">${CH[k][0]}</text>`;
+    by[k].forEach((r,j)=>{ const jit=((j*37)%11)/11; const cy=y0+6+jit*(bandH-12);
+      s+=`<circle cx="${x(r[0])}" cy="${cy}" r="3.2" fill="var(${CH[k][1]})" fill-opacity="${flag(r)?.95:.35}"/>`; });
+  });
+  if(g==='custom') s+=`<line x1="${x(cut)}" x2="${x(cut)}" y1="${T}" y2="${H-Bm}" stroke="var(--fg)" stroke-width="1.5"/>`;
+  $('strip').setAttribute('viewBox',`0 0 ${W} ${H}`); $('strip').style.minWidth='560px'; $('strip').style.width='100%'; $('strip').innerHTML=s;
+}
+['variant','gate','cut'].forEach(id=>$(id).addEventListener('input',drawDet));
+
+/* ---------- Replay ---------- */
+const POLN={frozen:'Frozen',fixed:'Fixed channel',migration:'Migration'}, DEFN={det:'Deterministic',rand:'Randomized'};
+function drawT6(){
+  const tot={}; B.trajs.forEach(t=>{ const k=t.def+t.pol; tot[k]=(tot[k]||0)+t.r.reduce((a,r)=>a+(r.ok?r.bits:0),0); });
+  let h='<tr><th>Rewriter</th>'+Object.values(POLN).map(p=>`<th>${p}</th>`).join('')+'</tr>';
+  for(const d of ['det','rand']) h+=`<tr><td>${DEFN[d]}</td>`+Object.keys(POLN).map(p=>`<td>${tot[d+p]}</td>`).join('')+'</tr>';
+  $('t6').innerHTML=h;
+}
+const ids=Object.keys(B.parents).sort();
+$('parent').innerHTML=ids.map(p=>`<option value="${p}">${p.replace('clean_','')}</option>`).join('');
+const ZW=/[\u{200B}-\u{200F}\u{2028}-\u{202F}\u{2060}-\u{206F}\u{FEFF}\u{E0000}-\u{E007F}]/gu;
+const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+function show(i){ return esc(B.texts[i]||'').replace(ZW,'<span class="zw">ZW</span>'); }
+function drawRep(){
+  const p=$('parent').value, pol=$('pol').value, d=$('def').value, P=B.parents[p];
+  const t=B.trajs.find(x=>x.p===p&&x.pol===pol&&x.def===d);
+  const cc=P.counts;
+  $('parent-info').innerHTML=`<p class="note" style="margin:0 0 8px">${P.model} · ${P.domain} · ${P.len} tokens · topic ${P.topic} · candidates: ${Object.entries(cc).map(([k,n])=>`${CH[k][0]} ${n}`).join(', ')}</p>
+    <details><summary>Prompt and clean answer</summary><div class="txt">${show(P.prompt)}</div><div class="txt">${show(P.clean)}</div></details>`;
+  $('rounds').innerHTML=t.r.map((r,k)=>{
+    const rewritten=r.o!==r.f, flagged=!!r.det;
+    const outcome=r.ok?`<span class="pill good">Recovered</span>`:`<span class="pill bad">Not recovered</span>`;
+    const route=flagged?(rewritten?`<span class="pill warn">Flagged, rewritten</span>`:`<span class="pill warn">Flagged</span>`):`<span class="pill neutral">Passed</span>`;
+    const slots=r.slots.length?r.slots.map(s=>`${s[0]}: want ${s[1]} got ${s[2]} (${s[3]})`).join('<br>'):'';
+    return `<div class="round"><h3>R${k} <span>${dotHtml(r.a)}${CH[r.a][0]}</span> ${route} ${outcome}</h3>
+      <dl class="kv"><dt>Strategy</dt><dd>#${r.s} · ${r.why.replace(/_/g,' ')}</dd>
+      <dt>Detector</dt><dd>${r.fold}/10 models · mean score ${r.score.toFixed(3)}</dd>
+      <dt>Payload</dt><dd>${r.bits} bits${r.dec?` · decoded <span class="mono">${esc(r.dec)}</span>`:''}</dd>
+      ${r.err?`<dt>Decoder</dt><dd>${esc(r.err)}</dd>`:''}
+      ${slots?`<dt>Slots</dt><dd class="mono">${slots}</dd>`:''}</dl>
+      <details><summary>Sent text</summary><div class="txt">${show(r.o)}</div></details>
+      <details><summary>${rewritten?'Delivered text (rewritten)':'Delivered text (unchanged)'}</summary><div class="txt">${show(r.f)}</div></details></div>`;
+  }).join('');
+}
+['parent','pol','def'].forEach(id=>$(id).addEventListener('input',drawRep));
+
+/* ---------- Tabs ---------- */
+function tab(which){
+  $('view-det').hidden=which!=='det'; $('view-rep').hidden=which!=='rep';
+  $('tab-det').setAttribute('aria-selected',which==='det'); $('tab-rep').setAttribute('aria-selected',which==='rep');
+  try{history.replaceState(null,'','#'+which)}catch(e){}
+}
+$('tab-det').onclick=()=>tab('det'); $('tab-rep').onclick=()=>tab('rep');
+drawDet(); drawT6(); drawRep();
+if(location.hash==='#rep') tab('rep');
+</script>

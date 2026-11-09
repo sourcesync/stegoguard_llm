@@ -23,6 +23,7 @@ outputs/**/*.npz
 outputs/**/*.npy
 outputs/**/*.pkl
 outputs/**/*.joblib
+outputs/explorer/index.html
 
 # Model weights and caches
 *.pt
