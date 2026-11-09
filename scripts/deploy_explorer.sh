@@ -3,9 +3,9 @@
 #
 # Needs: the data bundle unpacked under outputs/pilot_v0, python3, and a
 # logged-in gcloud (`gcloud auth login`, `gcloud config set project ...`).
-# The service requires authentication; grant access with:
-#   gcloud run services add-iam-policy-binding stegoguard-explorer \
-#       --region us-west1 --member user:someone@example.com --role roles/run.invoker
+# The service is public: anyone with its https URL can open it. If your
+# organization blocks public Cloud Run services, the deploy succeeds but the
+# URL returns 403 (see the main README).
 #
 # Options (environment variables): SERVICE, REGION, PROJECT.
 # Added after the experiments; not covered by the freeze manifests.
@@ -32,10 +32,10 @@ gcloud run deploy "$SERVICE" \
     --source "$STAGE" \
     --project "$PROJECT" \
     --region "$REGION" \
-    --no-allow-unauthenticated \
+    --allow-unauthenticated \
     --memory 256Mi \
     --max-instances 2
 
 echo
-echo "Deployed. Open it through an authenticated proxy:"
-echo "  gcloud run services proxy $SERVICE --region $REGION --project $PROJECT"
+echo "Deployed. Public URL:"
+gcloud run services describe "$SERVICE" --region "$REGION" --project "$PROJECT" --format 'value(status.url)'

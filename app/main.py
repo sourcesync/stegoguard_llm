@@ -26,7 +26,7 @@ app = Flask(__name__)
 @app.after_request
 def headers(resp: Response) -> Response:
     resp.headers["X-Content-Type-Options"] = "nosniff"
-    resp.headers["Cache-Control"] = "private, max-age=300"
+    resp.headers["Cache-Control"] = "public, max-age=300"
     return resp
 
 

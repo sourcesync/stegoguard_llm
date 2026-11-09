@@ -120,14 +120,9 @@ gcloud config set project YOUR-PROJECT
 scripts/deploy_explorer.sh                  # exports the bundle, builds the page, deploys
 ```
 
-The service is deployed with `--no-allow-unauthenticated`. Give each collaborator access with the Cloud Run Invoker role:
+The service is public: anyone with its `https://...run.app` URL can open it, and the script prints the URL when the deploy finishes. The first deploy asks to enable the Cloud Run, Cloud Build and Artifact Registry APIs. `SERVICE`, `REGION` and `PROJECT` can be set as environment variables.
 
-```bash
-gcloud run services add-iam-policy-binding stegoguard-explorer \
-    --region us-west1 --member user:someone@example.com --role roles/run.invoker
-```
-
-They can then reach it through `gcloud run services proxy stegoguard-explorer --region us-west1` (opens on localhost). For sign-in from a plain browser, put Identity-Aware Proxy in front of the service; check the current Cloud Run documentation for how. The first deploy asks to enable the Cloud Run, Cloud Build and Artifact Registry APIs. `SERVICE`, `REGION` and `PROJECT` can be set as environment variables. Anyone who can open the service can read the full model outputs in the bundle.
+If the URL returns 403 after a successful deploy, an organization policy (domain restricted sharing) is blocking public access to the service; a project owner has to relax it for this project. The page embeds the full model outputs from the pilot, including the stego texts, and anyone with the URL can read and copy them. To make the service private later, redeploy with `--no-allow-unauthenticated` and grant `roles/run.invoker` to named users.
 
 ## Review notes
 
