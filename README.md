@@ -80,6 +80,36 @@ Line-ending normalization is disabled (`.gitattributes`) because many frozen fil
 
 Large outputs (JSON/JSONL corpora, features, defense outputs, payload results) are not tracked in git. See [`data/README.md`](data/README.md) for what they contain and how to obtain them.
 
+## Results bundle
+
+`scripts/export_explorer_bundle.py` collects the frozen results into one compact JSON file (about 1.2 MB) for quick analysis or an interactive explorer:
+
+```bash
+python scripts/export_explorer_bundle.py          # writes outputs/explorer/explorer_bundle.json
+```
+
+It requires the data bundle to be unpacked. The output contains:
+
+- `op`: out-of-fold detector predictions for the 104 matched parents (416 records) for the deployed detector and each feature-family variant, with each fold's F1, 5% FPR and 1% FPR decisions.
+- `parents`: the 48 adaptive-replay parents, with prompt, clean answer, candidate counts, and how StegoGuard routed the clean answer each round.
+- `trajs`: all 288 adaptive trajectories, R0–R3, with the chosen candidate, selection reason, detector votes, sent and delivered text, payload length, exact recovery, decoded bits and slot details.
+- `texts`: a deduplicated text table referenced by index.
+
+The output is derived data and is not tracked in git. Recomputing from it reproduces the pooled AUROC (0.9037), the per-channel AUROCs, the gate counts in Table 5, and the Table 6 totals.
+
+## Review notes
+
+[`docs/review_notes.md`](docs/review_notes.md) records findings from re-checking the draft against the frozen records, each recomputed from the results bundle. In short:
+
+| Finding | Evidence |
+|---|---|
+| Headline numbers reproduce | AUROC 0.9037; rank/synonym/Unicode 0.9859 / 0.7251 / 1.0000; Table 6 totals 40/44/67 and 41/47/70 |
+| The linguistic classifier already detects Unicode attacks | Without the override: Unicode AUROC 0.9795, all 104 flagged at the F1 gate, 45 at 1% FPR |
+| Throughput counts repeated deliveries | Deterministic migration: 67 bits counted, 19 distinct; frozen: 40 counted, 10 distinct |
+| Most synonym messages are one bit | Of the 48 adaptive parents: 28 one-bit, 15 two-bit, 4 three-bit, 1 four-bit |
+| Randomization's edge is mostly decoder coincidence | All six recoveries after a rewrite are randomized synonym rounds; in four the slot word appears in a different sentence. They account for the whole randomized vs deterministic difference |
+| StegoGuard rewrites clean answers in the replay | 16 of 48 clean answers flagged in R0 (deterministic) |
+
 ## Tests
 
 ```bash
@@ -103,6 +133,7 @@ Consistent with the paper's ethics statement, this repository contains the evalu
 - [ ] Publish the data bundle and fill in `data/README.md`.
 - [ ] For review: anonymize. `outputs/pilot_v0/manifests/step7_final_hashes.txt` records absolute local paths containing a user name; it is a frozen artifact, so redact it only in the anonymized copy.
 - [ ] Decide whether `data/topics/conflict_templates.csv` and the conflict-prompt code path belong in the release (they are not used by the reported experiments).
+- [ ] Decide whether `docs/review_notes.md` stays in the public release (internal working notes).
 - [ ] Add `CITATION.cff` after the review period.
 
 ## Citation
