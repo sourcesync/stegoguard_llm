@@ -63,6 +63,10 @@ details{margin-top:8px} summary{cursor:pointer;color:var(--accent);font-size:13p
 .gen{border:1px solid var(--line);border-radius:6px;padding:12px;background:var(--surface);min-width:0}
 .gen h3{margin:0 0 6px;font:600 13px var(--font-body);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .gen .txt{max-height:none;margin:0}
+.btn{font:500 13px var(--font-body);color:var(--accent);background:none;border:1px solid var(--accent);border-radius:4px;padding:6px 12px;cursor:pointer}
+.btn:hover{background:var(--accent-soft)}
+.gen-head{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px}
+.gen-head h3{margin:0}
 </style>
 
 <div class="wrap">
@@ -112,6 +116,7 @@ details{margin-top:8px} summary{cursor:pointer;color:var(--accent);font-size:13p
 </section>
 
 <section id="view-cor" class="stack" hidden>
+  <div id="c-browse" class="stack">
   <div class="panel">
     <h2>Original corpus</h2>
     <p class="note">The clean answers generated before any attack: 20 prompts, each answered 4 times by 2 models; choose a model to read its 4 replicates.</p>
@@ -123,6 +128,8 @@ details{margin-top:8px} summary{cursor:pointer;color:var(--accent);font-size:13p
     <div id="c-prompt-text"></div>
   </div>
   <div class="gens" id="c-gens"></div>
+  </div>
+  <div id="c-picked" class="stack" hidden></div>
 </section>
 </div>
 
@@ -222,11 +229,25 @@ function corpusPrompts(){
 function fillPrompts(){
   $('c-prompt').innerHTML=corpusPrompts().map(k=>`<option value="${k}">${esc(B.corpus[k].topic)} · ${B.corpus[k].len} tokens</option>`).join('');
 }
+let shownGens=[];
 function drawCorpus(){
   const c=B.corpus[$('c-prompt').value];
   $('c-prompt-text').innerHTML=`<div class="txt">${show(c.prompt)}</div>`;
-  $('c-gens').innerHTML=c.gens.filter(g=>g.model===$('c-mod').value).map(g=>`<div class="gen"><h3>${MODELN[g.model]} <span class="pill neutral">replicate ${g.rep}</span> <span class="note">${g.tok} tokens</span></h3><div class="txt">${show(g.text)}</div></div>`).join('');
+  shownGens=c.gens.filter(g=>g.model===$('c-mod').value);
+  $('c-gens').innerHTML=shownGens.map((g,i)=>`<div class="gen"><div class="gen-head"><h3>${MODELN[g.model]} <span class="pill neutral">replicate ${g.rep}</span> <span class="note">${g.tok} tokens</span></h3><button class="btn" data-i="${i}">Select</button></div><div class="txt">${show(g.text)}</div></div>`).join('');
 }
+function pickGen(i){
+  const c=B.corpus[$('c-prompt').value], g=shownGens[i];
+  $('c-picked').innerHTML=`<div class="panel"><h2>Selected answer</h2>
+    <p class="note" style="margin:0 0 8px">${esc(c.domain)} · ${esc(c.topic)} · ${c.len}-token prompt</p>
+    <div class="txt">${show(c.prompt)}</div></div>
+    <div class="gen"><h3>${MODELN[g.model]} <span class="pill neutral">replicate ${g.rep}</span> <span class="note">${g.tok} tokens</span></h3><div class="txt">${show(g.text)}</div></div>
+    <div><button class="btn" id="c-reset">Start over</button></div>`;
+  $('c-browse').hidden=true; $('c-picked').hidden=false;
+  $('c-reset').onclick=()=>{$('c-picked').hidden=true; $('c-browse').hidden=false; window.scrollTo(0,0)};
+  window.scrollTo(0,0);
+}
+$('c-gens').addEventListener('click',e=>{const b=e.target.closest('button[data-i]'); if(b) pickGen(+b.dataset.i)});
 $('c-dom').addEventListener('input',()=>{fillPrompts();drawCorpus()});
 $('c-prompt').addEventListener('input',drawCorpus);
 $('c-mod').addEventListener('input',drawCorpus);
