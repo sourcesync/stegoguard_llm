@@ -121,12 +121,67 @@ def main() -> None:
         trajs.append({"id": m["trajectory_id"], "p": p, "pol": POL[m["attacker_condition"]],
                       "def": DEF[m["defender_policy"]], "init": ATK[m["initial_attack_name"]], "r": rounds})
 
+    # ---------- candidate catalogue (Pipeline tab) ----------
+    det_dir = step10 / "detection"
+    feat_dir = det_dir / "features"
+
+    def detector(d: dict) -> dict:
+        return {"mean": round(float(d["ensemble_mean_score"]), 4), "n": d["flagged_fold_count"],
+                "flag": int(bool(d["detected_f1"])), "uni": int(bool(d["unicode_hygiene_flag"])),
+                "folds": [[round(float(f["score"]), 4), round(float(f["threshold_f1"]), 4)]
+                          for f in d["fold_results"]]}
+
+    scores = {d["sample_id"]: detector(d) for d in rows(det_dir / "detector_scores.jsonl")}
+    feats: dict[str, list] = {}
+    for role, fname in (("a", "evaluator_a_distributional.jsonl"), ("b", "evaluator_b_distributional.jsonl")):
+        for r in rows(feat_dir / fname):
+            feats.setdefault(r["sample_id"], [None] * 13)[0 if role == "a" else 4:(4 if role == "a" else 8)] = [
+                round(float(r[k]), 4) for k in ("ppl", "mean_logp", "logp_var", "sentence_logp_var")]
+    for r in rows(feat_dir / "semantic_features.jsonl"):
+        feats[r["sample_id"]][8:10] = [round(float(r["visible_instruction_retention"]), 4),
+                                       round(float(r["paraphrase_embedding_similarity"]), 4)]
+    for r in rows(feat_dir / "unicode_features.jsonl"):
+        feats[r["sample_id"]][10:13] = [r["nonprinting_count"], r["zero_width_count"], r["unicode_tag_count"]]
+
+    used: dict[tuple, list] = {}
+    for t in trajs:
+        for k, rd in enumerate(t["r"]):
+            used.setdefault((t["p"], rd["a"], rd["s"]), []).append(f"{t['pol']}:{t['def']}:{k}")
+
+    catalogue: dict[str, dict] = {
+        p: {"det": scores[p], "feat": feats[p], "cands": [], "fails": []} for p in parents}
+    for r in rows(step10 / "candidate_samples.jsonl"):
+        p, a, cp = r["parent_sample_id"], ATK[r["attack_name"]], r["channel_parameters"] or {}
+        c = {"a": a, "s": int(r["strategy_index"]), "id": r["strategy_id"], "pay": r["payload"],
+             "bits": int(r["payload_bit_length"]), "ok": int(bool(r["exact_match"])), "t": tid(r["text"]),
+             "tok": r["stego_actual_token_length"], "bpt": round(float(r["bits_per_token"]), 4),
+             "tries": r["encoding_attempts"], "src": r["candidate_source"],
+             "det": scores[r["sample_id"]], "feat": feats[r["sample_id"]],
+             "used": used.get((p, a, int(r["strategy_index"])), [])}
+        if a == "s":
+            c["elig"] = cp.get("eligible_slot_ids", [])
+            c["subs"] = [[x["slot_id"], x["bit"], x["observed_term_before"], x["selected_term"], int(x["text_changed"])]
+                         for x in cp.get("substitutions", [])]
+        else:
+            c["topk"], c["nonce"] = cp.get("top_k"), cp.get("encoding_nonce")
+        catalogue[p]["cands"].append(c)
+    for r in rows(step10 / "candidate_failures.jsonl"):
+        msg = r["error_message"]
+        catalogue[r["clean_parent_id"]]["fails"].append(
+            {"a": ATK[r["attack_name"]], "s": int(r["strategy_index"]),
+             "why": msg.split("Last error: ", 1)[-1]})
+    for c in catalogue.values():
+        c["cands"].sort(key=lambda x: (x["a"], x["s"]))
+        c["fails"].sort(key=lambda x: (x["a"], x["s"]))
+
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(json.dumps({"op": op, "parents": parents, "trajs": trajs, "texts": texts},
+    out.write_text(json.dumps({"op": op, "parents": parents, "trajs": trajs, "cat": catalogue, "texts": texts},
                               separators=(",", ":"), ensure_ascii=False), encoding="utf-8")
-    print(f"wrote {out}: {len(parents)} parents, {len(trajs)} trajectories, {len(texts)} texts, "
-          f"{out.stat().st_size / 1e6:.1f} MB")
+    n_c = sum(len(c["cands"]) for c in catalogue.values())
+    n_f = sum(len(c["fails"]) for c in catalogue.values())
+    print(f"wrote {out}: {len(parents)} parents, {len(trajs)} trajectories, {n_c} candidates, "
+          f"{n_f} failed candidates, {len(texts)} texts, {out.stat().st_size / 1e6:.1f} MB")
 
 
 if __name__ == "__main__":
