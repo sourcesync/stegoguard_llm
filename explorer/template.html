@@ -59,6 +59,10 @@ details{margin-top:8px} summary{cursor:pointer;color:var(--accent);font-size:13p
 .txt{white-space:pre-wrap;overflow-wrap:anywhere;background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:8px;margin:6px 0 0;font-size:13px;max-height:260px;overflow:auto}
 .zw{background:var(--warn-soft);color:var(--warn);font:500 10px var(--font-mono);padding:0 2px;border-radius:2px}
 .rounds{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.gens{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:12px}
+.gen{border:1px solid var(--line);border-radius:6px;padding:12px;background:var(--surface);min-width:0}
+.gen h3{margin:0 0 6px;font:600 13px var(--font-body);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.gen .txt{max-height:none;margin:0}
 </style>
 
 <div class="wrap">
@@ -69,6 +73,7 @@ details{margin-top:8px} summary{cursor:pointer;color:var(--accent);font-size:13p
 <nav role="tablist">
   <button role="tab" id="tab-det" aria-selected="true">Detector</button>
   <button role="tab" id="tab-rep" aria-selected="false">Replay</button>
+  <button role="tab" id="tab-cor" aria-selected="false">Corpus</button>
 </nav>
 
 <section id="view-det" class="stack">
@@ -104,6 +109,19 @@ details{margin-top:8px} summary{cursor:pointer;color:var(--accent);font-size:13p
     <div id="parent-info"></div>
   </div>
   <div class="rounds" id="rounds"></div>
+</section>
+
+<section id="view-cor" class="stack" hidden>
+  <div class="panel">
+    <h2>Original corpus</h2>
+    <p class="note">The clean answers generated before any attack: 20 prompts, each answered 4 times by 2 models.</p>
+    <div class="row">
+      <label>Domain<select id="c-dom"><option value="conversational">Conversational</option><option value="technical">Technical</option></select></label>
+      <label>Prompt<select id="c-prompt"></select></label>
+    </div>
+    <div id="c-prompt-text"></div>
+  </div>
+  <div class="gens" id="c-gens"></div>
 </section>
 </div>
 
@@ -193,13 +211,31 @@ function drawRep(){
 }
 ['parent','pol','def'].forEach(id=>$(id).addEventListener('input',drawRep));
 
+/* ---------- Corpus ---------- */
+const MODELN={Mistral:'Mistral-7B-Instruct-v0.3',Qwen:'Qwen2.5-7B-Instruct'};
+function corpusPrompts(){
+  const d=$('c-dom').value;
+  return Object.keys(B.corpus).filter(k=>B.corpus[k].domain===d)
+    .sort((a,b)=>B.corpus[a].topic.localeCompare(B.corpus[b].topic)||B.corpus[a].len-B.corpus[b].len);
+}
+function fillPrompts(){
+  $('c-prompt').innerHTML=corpusPrompts().map(k=>`<option value="${k}">${esc(B.corpus[k].topic)} · ${B.corpus[k].len} tokens</option>`).join('');
+}
+function drawCorpus(){
+  const c=B.corpus[$('c-prompt').value];
+  $('c-prompt-text').innerHTML=`<div class="txt">${show(c.prompt)}</div>`;
+  $('c-gens').innerHTML=c.gens.map(g=>`<div class="gen"><h3>${MODELN[g.model]} <span class="pill neutral">replicate ${g.rep}</span> <span class="note">${g.tok} tokens</span></h3><div class="txt">${show(g.text)}</div></div>`).join('');
+}
+$('c-dom').addEventListener('input',()=>{fillPrompts();drawCorpus()});
+$('c-prompt').addEventListener('input',drawCorpus);
+
 /* ---------- Tabs ---------- */
+const TABS=['det','rep','cor'];
 function tab(which){
-  $('view-det').hidden=which!=='det'; $('view-rep').hidden=which!=='rep';
-  $('tab-det').setAttribute('aria-selected',which==='det'); $('tab-rep').setAttribute('aria-selected',which==='rep');
+  TABS.forEach(t=>{$('view-'+t).hidden=t!==which; $('tab-'+t).setAttribute('aria-selected',t===which)});
   try{history.replaceState(null,'','#'+which)}catch(e){}
 }
-$('tab-det').onclick=()=>tab('det'); $('tab-rep').onclick=()=>tab('rep');
-drawDet(); drawT6(); drawRep();
-if(location.hash==='#rep') tab('rep');
+TABS.forEach(t=>{$('tab-'+t).onclick=()=>tab(t)});
+drawDet(); drawT6(); drawRep(); fillPrompts(); drawCorpus();
+if(TABS.includes(location.hash.slice(1))) tab(location.hash.slice(1));
 </script>

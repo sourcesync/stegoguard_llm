@@ -174,9 +174,24 @@ def main() -> None:
         c["cands"].sort(key=lambda x: (x["a"], x["s"]))
         c["fails"].sort(key=lambda x: (x["a"], x["s"]))
 
+    # ---------- clean corpus (Corpus tab): prompts and their generations only ----------
+    corpus: dict[str, dict] = {}
+    for r in rows(root / "clean" / "clean_samples_full.jsonl"):
+        c = corpus.setdefault(r["prompt_id"], {
+            "domain": r["domain"], "topic": r["topic_seed"], "len": int(r["nominal_target_length"]),
+            "prompt": tid(r["prompt"]), "gens": []})
+        c["gens"].append({"model": "Qwen" if "Qwen" in r["source_model"] else "Mistral",
+                          "rep": int(r["replicate_index"]), "tok": int(r["actual_token_length"]),
+                          "id": r["sample_id"], "text": tid(r["text"])})
+    if sum(len(c["gens"]) for c in corpus.values()) != 160:
+        raise ValueError("expected 160 clean generations")
+    for c in corpus.values():
+        c["gens"].sort(key=lambda g: (g["model"], g["rep"]))
+
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(json.dumps({"op": op, "parents": parents, "trajs": trajs, "cat": catalogue, "texts": texts},
+    out.write_text(json.dumps({"op": op, "parents": parents, "trajs": trajs, "cat": catalogue,
+                               "corpus": corpus, "texts": texts},
                               separators=(",", ":"), ensure_ascii=False), encoding="utf-8")
     n_c = sum(len(c["cands"]) for c in catalogue.values())
     n_f = sum(len(c["fails"]) for c in catalogue.values())

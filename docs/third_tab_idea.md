@@ -1,4 +1,4 @@
-# Explorer: third tab idea
+# Explorer: Pipeline tab idea (not built)
 
 George's description, verbatim, from the project conversation:
 
@@ -18,4 +18,4 @@ Counts and the 10-model voting rule have been checked against the frozen records
 
 ## Status
 
-Data layer done. The page for this tab has not been built.
+Data layer done. The page for this tab has not been built. The explorer's third tab is currently the Corpus tab (a plain browser for the clean prompts and answers).

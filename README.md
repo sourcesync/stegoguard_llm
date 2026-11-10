@@ -95,13 +95,15 @@ It requires the data bundle to be unpacked. The output contains:
 - `op`: out-of-fold detector predictions for the 104 matched parents (416 records) for the deployed detector and each feature-family variant, with each fold's F1, 5% FPR and 1% FPR decisions.
 - `parents`: the 48 adaptive-replay parents, with prompt, clean answer, candidate counts, and how StegoGuard routed the clean answer each round.
 - `trajs`: all 288 adaptive trajectories, R0–R3, with the chosen candidate, selection reason, detector votes, sent and delivered text, payload length, exact recovery, decoded bits and slot details.
+- `cat`: for each of the 48 parents, all 578 encoded candidates the replay could draw on (payload, word-level synonym substitutions, per-candidate detector votes and features), the 60 failed encoding attempts with reasons, and which replay rounds used each candidate.
+- `corpus`: the 160 clean generations grouped under their 20 prompts.
 - `texts`: a deduplicated text table referenced by index.
 
 The output is derived data and is not tracked in git. Recomputing from it reproduces the pooled AUROC (0.9037), the per-channel AUROCs, the gate counts in Table 5, and the Table 6 totals.
 
 ## Results explorer
 
-`explorer/template.html` is a single-page viewer for the bundle. The **Detector** tab recomputes flagged rates and AUROC per channel for any feature set and threshold, with a strip plot of the out-of-fold scores. The **Replay** tab shows the Table 6 totals and lets you step through any of the 288 trajectories, round by round, with the detector votes, the sent and delivered text, and the decode result.
+`explorer/template.html` is a single-page viewer for the bundle. The **Detector** tab recomputes flagged rates and AUROC per channel for any feature set and threshold, with a strip plot of the out-of-fold scores. The **Replay** tab shows the Table 6 totals and lets you step through any of the 288 trajectories, round by round, with the detector votes, the sent and delivered text, and the decode result. The **Corpus** tab lets you pick a domain and one of the 20 original prompts and read all 8 clean answers to it (2 models, 4 replicates).
 
 ```bash
 python scripts/export_explorer_bundle.py     # needs the data bundle
