@@ -33,8 +33,12 @@ def main() -> None:
     data = json.loads(Path(args.bundle).read_text(encoding="utf-8"))
     blob = (json.dumps(data, separators=(",", ":"), ensure_ascii=False)
             .replace("</", "<\\/").replace("\u2028", "\\u2028").replace("\u2029", "\\u2029"))
-    # The template is a page fragment; add a charset so it also opens straight from disk.
-    page = '<meta charset="utf-8">\n' + template.replace(PLACEHOLDER, blob)
+    # The template is a page fragment. Add the document head it needs to work on
+    # its own (opened from disk or served by app/): a doctype so the browser uses
+    # standards mode, a charset, and a viewport so it scales on phones.
+    head = ('<!doctype html>\n<html lang="en">\n<meta charset="utf-8">\n'
+            '<meta name="viewport" content="width=device-width, initial-scale=1">\n')
+    page = head + template.replace(PLACEHOLDER, blob)
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(page, encoding="utf-8")
