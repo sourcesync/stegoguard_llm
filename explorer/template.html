@@ -114,10 +114,11 @@ details{margin-top:8px} summary{cursor:pointer;color:var(--accent);font-size:13p
 <section id="view-cor" class="stack" hidden>
   <div class="panel">
     <h2>Original corpus</h2>
-    <p class="note">The clean answers generated before any attack: 20 prompts, each answered 4 times by 2 models.</p>
+    <p class="note">The clean answers generated before any attack: 20 prompts, each answered 4 times by 2 models; choose a model to read its 4 replicates.</p>
     <div class="row">
       <label>Domain<select id="c-dom"><option value="conversational">Conversational</option><option value="technical">Technical</option></select></label>
       <label>Prompt<select id="c-prompt"></select></label>
+      <label>Model<select id="c-mod"><option value="Mistral">Mistral-7B-Instruct-v0.3</option><option value="Qwen">Qwen2.5-7B-Instruct</option></select></label>
     </div>
     <div id="c-prompt-text"></div>
   </div>
@@ -224,10 +225,11 @@ function fillPrompts(){
 function drawCorpus(){
   const c=B.corpus[$('c-prompt').value];
   $('c-prompt-text').innerHTML=`<div class="txt">${show(c.prompt)}</div>`;
-  $('c-gens').innerHTML=c.gens.map(g=>`<div class="gen"><h3>${MODELN[g.model]} <span class="pill neutral">replicate ${g.rep}</span> <span class="note">${g.tok} tokens</span></h3><div class="txt">${show(g.text)}</div></div>`).join('');
+  $('c-gens').innerHTML=c.gens.filter(g=>g.model===$('c-mod').value).map(g=>`<div class="gen"><h3>${MODELN[g.model]} <span class="pill neutral">replicate ${g.rep}</span> <span class="note">${g.tok} tokens</span></h3><div class="txt">${show(g.text)}</div></div>`).join('');
 }
 $('c-dom').addEventListener('input',()=>{fillPrompts();drawCorpus()});
 $('c-prompt').addEventListener('input',drawCorpus);
+$('c-mod').addEventListener('input',drawCorpus);
 
 /* ---------- Tabs ---------- */
 const TABS=['det','rep','cor'];
